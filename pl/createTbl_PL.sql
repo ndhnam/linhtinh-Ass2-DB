@@ -2,14 +2,14 @@ USE dbTipee
 GO
 CREATE TABLE tblAccount
 (
-	id			CHAR(9)		PRIMARY KEY,
+	id			CHAR(6)		PRIMARY KEY,
 	username	VARCHAR(32)	NOT NULL,
 	password	VARCHAR(32)	NOT NULL,
 );
 
 CREATE TABLE tblShop
 (
-	id				CHAR(9)		PRIMARY KEY,
+	id				CHAR(6)		PRIMARY KEY,
 	name			VARCHAR(50)	NOT NULL,
 	number			INT,
 	address			VARCHAR(50),
@@ -20,8 +20,8 @@ CREATE TABLE tblShop
 );
 CREATE TABLE tblRate
 (
-	idCustomer		CHAR(9)		NOT NULL,
-	idShop			CHAR(9)		NOT NULL,
+	idCustomer		CHAR(6)		NOT NULL,
+	idShop			CHAR(6)		NOT NULL,
 	star			INT			NOT NULL,
 	describe		VARCHAR(100),
 	PRIMARY KEY(idCustomer, idShop),
@@ -29,9 +29,11 @@ CREATE TABLE tblRate
 ALTER TABLE dbo.tblShop
 	ADD CONSTRAINT fk_shop_acc_id
 	FOREIGN KEY (id) REFERENCES tblAccount(id)
+	ON DELETE CASCADE
 ALTER TABLE dbo.tblRate
 	ADD CONSTRAINT fk_rate_shop_id
 	FOREIGN KEY (idShop) REFERENCES tblShop(id)
+	ON DELETE CASCADE
 --ALTER TABLE dbo.tblCustomer
 --	ADD CONSTRAINT fk_rate_cus_id
 --	FOREIGN KEY (idCustomer) REFERENCES tblCustomer(id)
