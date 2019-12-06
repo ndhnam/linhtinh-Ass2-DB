@@ -14,7 +14,7 @@ CREATE PROCEDURE insertShopAccount
 AS
 BEGIN
 	DECLARE @id AS CHAR(6)
-	SET @id = ('KH' + CONVERT(VARCHAR(4),((SELECT COUNT(*) FROM dbo.tblShop) + 1)))
+	SET @id = ('CH' + CONVERT(VARCHAR(4),((SELECT COUNT(*) FROM dbo.tblShop) + 1)))
 	DECLARE	@count INT
 	SET @count = (SELECT COUNT(username) FROM dbo.tblAccount WHERE username = @username)
 	IF @count > 0
