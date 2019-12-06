@@ -1,27 +1,28 @@
-USE dbTipee
+﻿USE dbTipee
 GO
 CREATE TABLE tblAccount
 (
-	id			CHAR(6)		PRIMARY KEY,
-	username	VARCHAR(32)	NOT NULL,
-	password	VARCHAR(32)	NOT NULL,
+	id			VARCHAR(6)		PRIMARY KEY,			-- ID
+	username	VARCHAR(32)		NOT NULL,				-- Tên tài khoản
+	password	VARCHAR(500)	NOT NULL,				-- Mật khẩu
 );
 
 CREATE TABLE tblShop
 (
-	id				CHAR(6)		PRIMARY KEY,
-	name			VARCHAR(50)	NOT NULL,
-	number			INT,
-	address			VARCHAR(50),
-	classify		VARCHAR(30),
-	typesOfShop		VARCHAR(30),
-	email			VARCHAR(50),
-	distribution	VARCHAR(10),
+	id				VARCHAR(6)		PRIMARY KEY,	-- ID
+	name			VARCHAR(50)	NOT NULL,			-- Tên Shop
+	number			INT,							-- Số điện thoại
+	address			VARCHAR(50),					-- Địa chỉ
+	email			VARCHAR(50),					-- Email
+	avatar			VARCHAR(100),					-- Ảnh đại diện
+	classify		INT,							-- Phân loại (0 - không chuyên, 1 - chuyên)
+	typesOfShop		VARCHAR(30),					-- Sản phẩm chuyên về
+	distribution	VARCHAR(10),					-- Sỉ/lẻ
 );
 CREATE TABLE tblRate
 (
-	idCustomer		CHAR(6)		NOT NULL,
-	idShop			CHAR(6)		NOT NULL,
+	idCustomer		VARCHAR(6)		NOT NULL,
+	idShop			VARCHAR(6)		NOT NULL,
 	star			INT			NOT NULL,
 	describe		VARCHAR(100),
 	PRIMARY KEY(idCustomer, idShop),
@@ -37,9 +38,3 @@ ALTER TABLE dbo.tblRate
 --ALTER TABLE dbo.tblCustomer
 --	ADD CONSTRAINT fk_rate_cus_id
 --	FOREIGN KEY (idCustomer) REFERENCES tblCustomer(id)
-INSERT INTO tblAccount VALUES
-(
-	123456789,
-	'username',
-	'password'
-);
