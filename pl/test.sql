@@ -26,11 +26,24 @@ EXEC dbo.insertShopAccount
 	'1', 
 	'THỜI TRANG', 
 	'Lẻ';
+EXEC dbo.insertShopAccount 
+	'ch04', 
+	'ch04', 
+	'SHOP D', 
+	222222222, 
+	'73 Đường Mai Thị Lựu, Đa Kao, Quận 1, Hồ Chí Minh 700000, Việt Nam', 
+	'email4@gmail.com', 
+	'link', 
+	'0', 
+	'THỜI TRANG', 
+	'Lẻ';
 */
 --EXEC dbo.procedureChangePassword 'test1', 'test', 'test1';
 --EXEC dbo.procedureChangeProfileShop 'KH1', 'test1', 'test2', 'SHOP A', 111111111, 'address', 'email_1@gmail.com', 'link', '0', 'SPORT', 'Si';
---EXEC dbo.writeReviewShop 'CH1','KH2',4,'Nice';
+--EXEC dbo.writeReviewShop 'CH1','KH4',5,'Nice';
 
-SELECT * FROM dbo.tblAccount
-SELECT * FROM dbo.tblShop
+--SELECT * FROM dbo.tblAccount
+--SELECT * FROM dbo.tblShop
 SELECT * FROM dbo.tblRate
+SELECT dbo.[funcAvgRate]('CH1')
+--SELECT AVG(Cast(star AS FLOAT)) FROM tblRate WHERE idShop = 'CH1';
