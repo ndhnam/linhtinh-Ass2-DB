@@ -93,10 +93,16 @@ INSERT INTO tblOrder VALUES ('MDH004','Trực tiếp',2019-12-09,2019-12-16,'Đa
 INSERT INTO tblOrder VALUES ('MDH005','Trực tiếp',2019-11-19,2019-11-21,'Đã giao','ALOGN',,'','FREESHIP')
 
 -- trigger
+thay doi so luong khuyen mai
+bao loi nhap sai
 
 -- thủ tục
-
+sort
+tim kiem
 
 
 -- hàm
 CREATE FUNCTION Totalcost 
+
+
+
