@@ -61,35 +61,18 @@ BEGIN
 	DECLARE @hashPass VARBINARY(500) = HASHBYTES('SHA2_512', @password)
 	DECLARE @afterHashPassword VARCHAR(500) = CONVERT(VARCHAR(500), @hashPass)
 	DECLARE @count_id INT = (SELECT COUNT(id) FROM dbo.tblAccount WHERE id = @id)
-	IF @count_id = 0
+	DECLARE @count_user INT = (SELECT COUNT(username) FROM dbo.tblAccount WHERE username = @username)
+	IF @count_id = 0 AND @count_user = 0
 	BEGIN
 		INSERT INTO dbo.tblAccount(id, username, password) VALUES (@id, @username, @afterHashPassword)
 		IF @@ROWCOUNT > 0
+		BEGIN
 			INSERT INTO dbo.tblShop(id, name, number, address, email, avatar, classify, typesOfShop, distribution, total_rate) VALUES (@id, @name, @number, @address, @email, @avatar, @classify, @typesOfShop, @distribution, 0)
+		END
 	END
 END
 
-GO
-CREATE TRIGGER trgCheckAccount ON dbo.tblAccount
-AFTER INSERT
-AS
-BEGIN
-	DECLARE @newid VARCHAR(6) = (SELECT id FROM inserted)
-	DECLARE @newuser VARCHAR(32) = (SELECT username FROM inserted)
-	DECLARE @newpass VARCHAR(100) = (SELECT password FROM inserted)
-		BEGIN TRAN
-			IF (SELECT COUNT(username) FROM dbo.tblAccount WHERE username = @newuser) > 1
-				BEGIN 
-					PRINT 'This account was used'
-					ROLLBACK TRAN
-				END
-			ELSE
-				PRINT 'OK'
-		COMMIT TRAN
-END
-GO
-DROP TRIGGER trgCheckAccount
-GO
+
 --INSERT INTO dbo.tblAccount(id, username, password) VALUES ('CH0004','admin','admin')
 EXEC dbo.insertShopAccount 'CH0001', 'ch01', 'ch01', 'SHOP A', 111111111, N'7A/19 Thành Thái, Phường 14, Quận 10, Hồ Chí Minh, Việt Nam', 'email1@gmail.com', N'link', '1', N'THIẾT BỊ', N'Sỉ';
 EXEC dbo.insertShopAccount 'CH0002', 'ch02', 'ch02', 'SHOP B', 999999999, N'Số 30 Đường Số 52, Lữ Gia, Phường 15, Quận 11, Hồ Chí Minh 72621, Việt Nam', 'email2@gmail.com', N'link', '0', N'THỜI TRANG', N'Lẻ';
@@ -97,7 +80,7 @@ EXEC dbo.insertShopAccount 'CH0003', 'ch03', 'ch03', 'SHOP C', 333333333, N'270B
 EXEC dbo.insertShopAccount 'CH0004', 'ch04', 'ch04', 'SHOP D', 222222222, N'73 Đường Mai Thị Lựu, Đa Kao, Quận 1, Hồ Chí Minh 700000, Việt Nam', 'email4@gmail.com', N'link', '0', N'THỜI TRANG', N'Sỉ';
 EXEC dbo.insertShopAccount 'CH0005', 'ch05', 'ch05', 'SHOP E', 555555555, N'282/20 Đường Bùi Hữu Nghĩa, Phường 2, Bình Thạnh, Hồ Chí Minh, Việt Nam', 'email5@gmail.com', N'link', '1', N'ĐỒNG HỒ', N'Lẻ';
 EXEC dbo.insertShopAccount 'CH0006', 'ch06', 'ch06', 'SHOP F', 666666666, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email6@gmail.com', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
-EXEC dbo.insertShopAccount 'CH0007', 'ch06', 'ch06', 'SHOP F', 666666666, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email6@gmail.com', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
+EXEC insertShopAccount 'CH0007', 'ch06', 'ch06', 'SHOP F', 666666666, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email6@gmail.com', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
 
 GO
 SELECT * FROM dbo.tblAccount
@@ -105,20 +88,7 @@ SELECT * FROM dbo.tblShop
 SELECT * FROM dbo.tblRate
 GO
 -- Phần của Liêm --
-/*CREATE TABLE tblPromotion
-(
-	id				Char(9)		PRIMARY KEY,
-	startTime		Date		NOT NULL,
-	endTime			Date		NOT NULL,
-	dicription		Text		NOT NULL,
-	minTotal		Int			NOT NULL,
-	classify		Nchar(10)	NOT NULL,
-	depreciate		Int			NOT NULL,
-	decreasePercent Int			NOT NULL,
-	decreaseMax		Int			NOT NULL,
-	idShop			Int			NOT NULL
-);
-*/
+go
 CREATE TABLE tblTransportation
 (
 	id				Char(9)		PRIMARY KEY,
