@@ -12,15 +12,16 @@ CREATE TABLE tblAccount
 CREATE TABLE tblShop
 (
 	id				VARCHAR(6)		PRIMARY KEY,	-- ID
-	name			NCHAR(50)		NOT NULL,		-- Tên Shop
+	name			NVARCHAR(50)		NOT NULL,		-- Tên Shop
 	number			INT,							-- Số điện thoại
-	address			NCHAR(100),						-- Địa chỉ
+	address			NVARCHAR(100),						-- Địa chỉ
 	email			VARCHAR(50),					-- Email
 	avatar			VARCHAR(100),					-- Ảnh đại diện
 	classify		INT,							-- Phân loại (0 - không chuyên, 1 - chuyên)
-	typesOfShop		NCHAR(30),						-- Sản phẩm chuyên về (danh mục)
-	distribution	NCHAR(10),						-- Sỉ/lẻ
+	typesOfShop		NVARCHAR(30),						-- Sản phẩm chuyên về (danh mục)
+	distribution	NVARCHAR(10),						-- Sỉ/lẻ
 	total_rate		INT,							-- Tổng lượt đánh giá --
+	CONSTRAINT fk_shop_acc_id FOREIGN KEY (id) REFERENCES tblAccount(id),
 );
 
 CREATE TABLE tblRate
@@ -28,10 +29,29 @@ CREATE TABLE tblRate
 	idCustomer		VARCHAR(6)		NOT NULL,		-- id khách hàng 
 	idShop			VARCHAR(6)		NOT NULL,		-- id cửa hàng 
 	star			INT				NOT NULL,		-- số sao khách hàng đánh giá 
-	describe		NCHAR(100),						-- đánh giá 
+	describe		NVARCHAR(100),						-- đánh giá 
 	PRIMARY KEY(idCustomer, idShop),
+	CONSTRAINT fk_rate_shop_id FOREIGN KEY (idShop) REFERENCES tblShop(id)
+	--CONSTRAINT fk_rate_cus_id FOREIGN KEY (idCustomer) REFERENCES tblCustomer(id_customer)
+);
+CREATE TABLE tblCustomer 
+(
+	id_customer VARCHAR(6) PRIMARY KEY,
+	last_name NVARCHAR(20), 
+	first_name NVARCHAR(20),
+	email VARCHAR(100) NOT NULL,
+	sex BIT,
+	date_of_birth DATE,
+	id_intro VARCHAR(15),
+	id_reduce VARCHAR(15),
+	CONSTRAINT fk_cus_acc_id FOREIGN KEY (id_customer) REFERENCES tblAccount(id)
 );
 
+ALTER TABLE dbo.tblRate
+	ADD CONSTRAINT fk_rate_cus_id
+	FOREIGN KEY (idCustomer) REFERENCES tblCustomer(id_customer)
+	ON DELETE CASCADE
+/*
 ALTER TABLE dbo.tblShop
 	ADD CONSTRAINT fk_shop_acc_id
 	FOREIGN KEY (id) REFERENCES tblAccount(id)
@@ -39,27 +59,31 @@ ALTER TABLE dbo.tblShop
 ALTER TABLE dbo.tblRate
 	ADD CONSTRAINT fk_rate_shop_id
 	FOREIGN KEY (idShop) REFERENCES tblShop(id)
+	ON DELETE CASCADE 
+ALTER TABLE dbo.tblCustomer
+	ADD CONSTRAINT fk_cus_acc_id
+	FOREIGN KEY (id_customer) REFERENCES tblAccount(id)
 	ON DELETE CASCADE
--- ALTER TABLE dbo.tblCustomer
---	ADD CONSTRAINT fk_rate_cus_id
---	FOREIGN KEY (idCustomer) REFERENCES tblCustomer(id)
+*/
+
+
 GO
 CREATE PROCEDURE insertShopAccount
 	@id VARCHAR(6),
 	@username VARCHAR(32),
 	@password VARCHAR(50),
-	@name NCHAR(50),
+	@name NVARCHAR(50),
 	@number INT,
-	@address NCHAR(100),
+	@address NVARCHAR(100),
 	@email VARCHAR(50),
 	@avatar VARCHAR(100),
 	@classify INT,
-	@typesOfShop NCHAR(30),
-	@distribution NCHAR(10)
+	@typesOfShop NVARCHAR(30),
+	@distribution NVARCHAR(10)
 AS
 BEGIN
 	DECLARE @hashPass VARBINARY(500) = HASHBYTES('SHA2_512', @password)
-	DECLARE @afterHashPassword VARCHAR(500) = CONVERT(VARCHAR(500), @hashPass)
+	DECLARE @afterHashPassword VARCHAR(100) = CONVERT(VARCHAR(500), @hashPass)
 	DECLARE @count_id INT = (SELECT COUNT(id) FROM dbo.tblAccount WHERE id = @id)
 	DECLARE @count_user INT = (SELECT COUNT(username) FROM dbo.tblAccount WHERE username = @username)
 	IF @count_id = 0 AND @count_user = 0
@@ -91,16 +115,22 @@ GO
 
 CREATE PROCEDURE writeReviewShop
 	@idShop VARCHAR(6),
-	@idCustomer VARCHAR(6),
+	@username VARCHAR(32),
+	@password VARCHAR(100),
 	@star INT,
-	@describe NCHAR(100)
+	@describe NVARCHAR(100)
 AS
 BEGIN
-	IF @describe = ''
-		PRINT 'Write comment'
-	ELSE 
+	DECLARE @hashPass VARBINARY(500) = HASHBYTES('SHA2_512', @password)
+	DECLARE @afterHashPassword VARCHAR(100) = CONVERT(VARCHAR(500), @hashPass)
+	IF (@afterHashPassword = (SELECT password FROM dbo.tblAccount WHERE username = @username))  AND (@username LIKE 'kh%')
+		BEGIN
+		IF  @describe = ''
+			PRINT 'Write comment'
+		ELSE
 		BEGIN
 			DECLARE @countRate AS INT
+			DECLARE @idCustomer VARCHAR(6) = (SELECT id FROM dbo.tblAccount WHERE username = @username)
 			SET @countRate = (SELECT COUNT(idShop) FROM dbo.tblRate WHERE idCustomer = @idCustomer AND idShop = @idShop)
 			IF	@countRate = 0
 				BEGIN
@@ -116,6 +146,9 @@ BEGIN
 					PRINT 'Success'
 				END
 		END
+		END
+	ELSE
+		PRINT 'Password wrong!'
 END
 
 GO
@@ -129,10 +162,19 @@ END
 GO
 CREATE PROCEDURE deleteReviewShop
 	@idShop VARCHAR(6),
-	@idCustomer VARCHAR(6)
+	@username VARCHAR(32),
+	@password VARCHAR(100)
 AS
 BEGIN
-	DELETE FROM dbo.tblRate WHERE idCustomer = @idCustomer
+	DECLARE @hashPass VARBINARY(500) = HASHBYTES('SHA2_512', @password)
+	DECLARE @afterHashPassword VARCHAR(100) = CONVERT(VARCHAR(500), @hashPass)
+	IF @afterHashPassword != (SELECT password FROM dbo.tblAccount WHERE username = @username) 
+		PRINT 'Password wrong!'
+	ELSE 
+		BEGIN
+			DECLARE @idCustomer VARCHAR(6) = (SELECT id FROM dbo.tblAccount WHERE username = @username)
+			DELETE FROM dbo.tblRate WHERE idCustomer = @idCustomer
+		END
 END
 GO
 CREATE TRIGGER trgDeleteRate ON dbo.tblRate
@@ -149,22 +191,54 @@ BEGIN
 END
 GO
 
-EXEC writeReviewShop 'CH0001', 'KH0001', 5, N'Đẹp';
-EXEC writeReviewShop 'CH0001', 'KH0002', 4, N'Đẹp';
-EXEC writeReviewShop 'CH0001', 'KH0003', 5, N'Hàng tốt đó!';
-EXEC writeReviewShop 'CH0001', 'KH0004', 3, N'Tạm được!';
-EXEC writeReviewShop 'CH0002', 'KH0001', 3, N'Tạm được!';
-EXEC writeReviewShop 'CH0002', 'KH0004', 2, N'Tạm được!';
-EXEC writeReviewShop 'CH0001', 'KH0005', 5, N'OK đấy!';
+CREATE PROCEDURE insertCustomerAccount
+	@id_customer VARCHAR(6),
+	@username VARCHAR(32),
+	@password VARCHAR(50),
+	@last_name NVARCHAR(20), 
+	@first_name NVARCHAR(20),
+	@email VARCHAR(100),
+	@sex BIT,
+	@date_of_birth DATE,
+	@id_intro VARCHAR(15),
+	@id_reduce VARCHAR(15)
+AS
+BEGIN
+	DECLARE @hashPass VARBINARY(500) = HASHBYTES('SHA2_512', @password)
+	DECLARE @afterHashPassword VARCHAR(100) = CONVERT(VARCHAR(500), @hashPass)
+	DECLARE @count_id INT = (SELECT COUNT(id) FROM dbo.tblAccount WHERE id = @id_customer)
+	DECLARE @count_user INT = (SELECT COUNT(username) FROM dbo.tblAccount WHERE username = @username)
+	IF @count_id = 0 AND @count_user = 0
+	BEGIN
+		INSERT INTO dbo.tblAccount(id, username, password) VALUES (@id_customer, @username, @afterHashPassword)
+		IF @@ROWCOUNT > 0
+		BEGIN
+			INSERT INTO dbo.tblCustomer(id_customer, last_name, first_name, email, sex, date_of_birth, id_intro, id_reduce) VALUES (@id_customer, @last_name, @first_name, @email, @sex, @date_of_birth, @id_intro, @id_reduce)
+		END
+	END
+END
+
+EXEC insertCustomerAccount 'KH0001','kh01','kh01',N'Uzumaki',N'Naruto','naruto@gmail.com',0,'19991010','','';
+EXEC insertCustomerAccount 'KH0002','kh02','kh02',N'Uchiha',N'Sasuke','sasuke@gmail.com',0,'19991010','','';
+EXEC insertCustomerAccount 'KH0003','kh03','kh03',N'Nara',N'Shikamaru','shikamaru@gmail.com',0,'19991010','','';
+SELECT * FROM dbo.tblAccount
+SELECT * FROM dbo.tblCustomer
+
+EXEC writeReviewShop 'CH0001', 'kh01', 'kh01', 5, N'Đẹp';
+EXEC writeReviewShop 'CH0001', 'kh02', 'kh02', 4, N'Đẹp';
+EXEC writeReviewShop 'CH0001', 'kh03', 'kh03', 5, N'Hàng tốt đó!';
+EXEC writeReviewShop 'CH0001', 'kh04', 'kh04', 3, N'Tạm được!';
+EXEC writeReviewShop 'CH0002', 'kh01', 'kh01', 3, N'Tạm được!';
+EXEC writeReviewShop 'CH0002', 'kh01', 'kh01', 2, N'Tạm được!';
+EXEC writeReviewShop 'CH0001', 'kh05', 'kh05', 5, N'OK đấy!';
 SELECT * FROM dbo.tblRate
 SELECT * FROM dbo.tblShop
-
-EXEC deleteReviewShop 'CH0001','KH0005';
-EXEC deleteReviewShop 'CH0001','KH0002';
+EXEC deleteReviewShop 'CH0001','kh01','kh01';
+EXEC deleteReviewShop 'CH0001','kh02','kh02';
 SELECT * FROM dbo.tblRate
 SELECT * FROM dbo.tblShop
 GO
-ALTER TRIGGER trgCheckEmail ON dbo.tblShop
+CREATE TRIGGER trgCheckEmail ON dbo.tblShop
 AFTER INSERT
 AS
 BEGIN
@@ -180,6 +254,68 @@ BEGIN
 	ELSE
 		PRINT 'SUCCESS'
 END
+GO
+CREATE PROCEDURE procedureChangePassword
+	@username VARCHAR(50),
+	@curpassword VARCHAR(32),
+	@newpassword VARCHAR(100)
+AS
+BEGIN
+	DECLARE @hashCurPass AS VARCHAR(500)
+	SET @hashCurPass = CONVERT(VARCHAR(500), HASHBYTES('SHA2_512', @curpassword))
+	DECLARE @password AS VARCHAR(500)
+	SET @password = (SELECT password FROM dbo.tblAccount WHERE username = @username)
+	IF @hashCurPass = @password
+		BEGIN
+			UPDATE dbo.tblAccount SET password = CONVERT(VARCHAR(500), HASHBYTES('SHA2_512', @newpassword)) WHERE username = @username;
+			print 'Change Password Success!'
+		END
+	ELSE
+		BEGIN
+			print 'Incorrect current password' 
+		END
+END
+GO
+CREATE PROCEDURE procedureChangeProfileShop
+	@id	VARCHAR(6),
+	@username VARCHAR(32),
+	@curpassword VARCHAR(100),
+	@name NVARCHAR(50),
+	@number INT,
+	@address NVARCHAR(50),
+	@email VARCHAR(50),
+	@avatar VARCHAR(100),
+	@classify INT,
+	@typesOfShop NVARCHAR(30),
+	@distribution NVARCHAR(10)
+AS
+BEGIN
+	DECLARE @hashCurPass AS VARCHAR(500)
+	SET @hashCurPass = CONVERT(VARCHAR(500), HASHBYTES('SHA2_512', @curpassword))
+	DECLARE @password AS VARCHAR(500)
+	SET @password = (SELECT password FROM dbo.tblAccount WHERE username = @username)
+	IF @hashCurPass = @password
+		BEGIN
+			--UPDATE dbo.tblAccount SET password = CONVERT(VARCHAR(500), HASHBYTES('SHA2_512', @newpassword)) WHERE username = @username;
+			UPDATE DBO.tblShop SET
+				name = @name,
+				number = @number,
+				address = @address,
+				email = @email,
+				avatar = @avatar,
+				classify = @classify,
+				typesOfShop = @typesOfShop,
+				distribution = @distribution
+			WHERE
+				id = @id;
+			print 'Change profile shop success!'
+		END
+	ELSE
+		BEGIN
+			print 'Incorrect current password' 
+		END
+END
+
 
 -- Phần của Liêm --
 GO
@@ -237,17 +373,6 @@ CREATE TABLE tblBELONG_CATEGORY(
 GO
 
 -- Phần của Ly --
-CREATE TABLE tblCustomer 
-(
-	id_customer VARCHAR(10) PRIMARY KEY,
-	last_name NVARCHAR(20), 
-	first_name NVARCHAR(20),
-	email VARCHAR(100) NOT NULL,
-	sex BIT,
-	date_of_birth DATE,
-	id_intro VARCHAR(15),
-	id_reduce VARCHAR(15)
-);
 
 CREATE TABLE tblTelephoneNumber
 (

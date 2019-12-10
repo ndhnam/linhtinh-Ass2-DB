@@ -48,14 +48,15 @@ SELECT * FROM dbo.tblRate
 DELETE FROM dbo.tblAccount
 DELETE FROM dbo.tblShop
 DELETE FROM dbo.tblRate
-
-DELETE FROM dbo.tblAccount WHERE id = 'CH0007'
-DELETE FROM dbo.tblShop WHERE id = 'CH0007'
+DELETE FROM dbo.tblRate WHERE idShop = 'CH0001'
+DELETE FROM dbo.tblAccount WHERE id = 'CH0001'
+DELETE FROM dbo.tblShop WHERE id = 'CH0001'
 ALTER TABLE dbo.tblShop DROP CONSTRAINT fk_shop_acc_id;
 ALTER TABLE dbo.tblRate DROP CONSTRAINT fk_rate_shop_id;
 DROP TABLE dbo.tblAccount;
 DROP TABLE dbo.tblShop;
 DROP TABLE dbo.tblRate;
+DROP TABLE dbo.tblCustomer;
 DROP PROCEDURE dbo.insertShopAccount;
 DROP PROCEDURE dbo.procedureChangePassword;
 DROP PROCEDURE dbo.procedureChangeProfileShop;
