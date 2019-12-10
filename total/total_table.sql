@@ -82,16 +82,16 @@ ALTER TABLE tblSell
 CREATE TABLE tblPromotion
 (
 	id					VARCHAR(50)		PRIMARY KEY,
-	startTime			Date			NOT NULL,
-	endTime				Date			NOT NULL,
-	amountOfPromotion	Int				NOT NULL,
-	dicription			Text			NOT NULL,
-	minTotal			Int				NOT NULL,
-	classify			Nchar(10)		NOT NULL,
-	depreciate			Int				NOT NULL,
-	decreasePercent		Int				NOT NULL,
-	decreaseMax			Int				NOT NULL,
-	idShop				VARCHAR(50)		NOT NULL
+	startTime			Date		NOT NULL,
+	endTime				Date		NOT NULL,
+	amountOfPromotion	Int			NOT NULL,
+	dicription			Text		NOT NULL,
+	minTotal			Int			NOT NULL,
+	classify			Nchar(10)	NOT NULL,
+	depreciate			Int			NOT NULL,
+	decreasePercent		Int			NOT NULL,
+	decreaseMax			Int			NOT NULL,
+	idShop				VARCHAR(50)	NOT NULL
 );
  ALTER TABLE tblPromotion
  ADD CONSTRAINT fk_IdShop
@@ -101,24 +101,24 @@ CREATE TABLE tblPromotion
 CREATE TABLE tblTransportation
 (
 	id				VARCHAR(50)		PRIMARY KEY,
-	nameTrans		Nchar(50)		NOT NULL,
-	hotline			Int				NOT NULL,
-	mail			Char(50)		NOT NULL,
-	costLevel		Int				NOT NULL,
-	addressTrans	Char(100)		NOT NULL
+	nameTrans		Nchar(50)	NOT NULL,
+	hotline			Int			NOT NULL,
+	mail			Char(50)	NOT NULL,
+	costLevel		Int			NOT NULL,
+	addressTrans	Char(100)	NOT NULL
 );
 
 CREATE TABLE tblOrder
 (
 	id				VARCHAR(50)		PRIMARY KEY,
-	methodOfPayment Nchar(50)		NOT NULL,
-	bookingTime		Date			NOT NULL,
-	deliveryTime	Date			NOT NULL,
-	orderStatus		Nchar(50)		NOT NULL,
-	transportCode	VARCHAR(50)		NOT NULL,
-	transportCost	Int				NOT NULL,
-	idCustomer		VARCHAR(50)		NOT NULL,
-	promotionCode	VARCHAR(50)		NOT NULL
+	methodOfPayment Nchar(50)	NOT NULL,
+	bookingTime		Date		NOT NULL,
+	deliveryTime	Date		NOT NULL,
+	orderStatus		Nchar(50)	NOT NULL,
+	transportCode	VARCHAR(50)	NOT NULL,
+	transportCost	Int			NOT NULL,
+	idCustomer		VARCHAR(50)	NOT NULL,
+	promotionCode	VARCHAR(50)	NOT NULL
 );
 
 ALTER TABLE dbo.tblOrder

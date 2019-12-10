@@ -89,22 +89,35 @@ BEGIN
 	END
 END
 go
+drop trigger check_amount_of_promotion
+exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuyễn mãi tết 2020',500000,'đồ gia dụng',150000,10,200000,'ch0001'
+
+
+
 
 	--thay doi so luong khuyen mai
- CREATE TRIGGER update_amount_of_Promotion ON tblOrder AFTER INSERT AS
+ Create TRIGGER update_amount_of_Promotion ON tblOrder AFTER INSERT AS
  BEGIN
-	DECLARE @promotionCode Varchar(6)
+	DECLARE @promotionCode Varchar(50)
 	SET @promotionCode = (SELECT promotionCode FROM inserted)
-	IF @promotionCode <> NULL 
+	IF exists(select * from tblPromotion where id = @promotionCode) 
 	BEGIN
+		print @promotionCode
 		UPDATE tblPromotion 
-		SET amountOfPromotion = amountOfPromotion - 1 
+		SET amountOfPromotion = (select amountOfPromotion from tblPromotion WHERE tblPromotion.id = @promotionCode) - 1 
 		FROM tblPromotion
-		WHERE @promotionCode = tblPromotion.id
+		WHERE tblPromotion.id = @promotionCode
 	END
  END
  go
-	--bao loi nhap sai
+ drop trigger update_amount_of_Promotion
+
+ exec insertOrder 'MDH014','Chuyển khoản','2019-12-01','2019-12-05','Đã giao','GRAB',23000,'','BLACK'
+select * from tblPromotion
+select * from tblOrder
+select * from tblTransportation
+	-- cap nhat phi van chuyen
+
 
 -- thủ tục
 	--sort
@@ -125,7 +138,7 @@ begin
 		order by costLevel desc
 	end
 end
-
+exec sortTransportationByCost 0
 	--tim kiem
 	
 
