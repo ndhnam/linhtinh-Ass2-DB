@@ -98,6 +98,81 @@ Two USB 3 ports
 Thunderbolt 2 port
 Sdxc port'
 
+exec insertProduct '4478226675450',
+'Legendary Whitetails Mens Buck Camp Flannel Shirt',
+'S M L XL XXL',
+'https://images-na.ssl-images-amazon.com/images/I/81EMrdLdgiL._AC_UL320_SR312,320_.jpg',
+'army navy black',
+'100% Cotton
+Imported
+Button closure
+Contrasting corduroy lined collar and cuffs
+Great look and lasting durability
+Left chest pocket with pencil slot and button closure
+Double pleat back for ease of movement'
+
+exec insertProduct '6118019675578',
+'Men is Full-Zip Polar Fleece Jacket',
+'S M L XL XXL',
+'https://salt.tikicdn.com/cache/w1200/ts/product/be/c7/ba/053e1e37e14e56dfd4933103c2cd17b6.jpg',
+'yellow-black black-white red-black',
+'100% Polyester
+Imported
+Machine Wash'
+
+exec insertProduct '7528313095320',
+'T-shirt for women Basic Prefall19 Marc Fashion',
+'S M L',
+'https://salt.tikicdn.com/cache/w1200/ts/product/dc/c5/15/92a6211ba57293d30b3548569b8c23bd.jpg https://salt.tikicdn.com/cache/w1200/ts/product/94/58/ad/cfd000c085d752cfb61c18cc9cf6a49f.jpg',
+'skin yellow',
+'56% Cotton, 38% Modal, 6% Spandex
+Imported
+Machine Wash
+A wardrobe must-have, this pack of two crewneck tees features a comfortable cotton blend and a straight hem for easy, everyday wear
+Everyday made better: we listen to customer feedback and fine-tune every detail to ensure quality, fit, and comfort
+Model is 5.0 and wearing size Small'
+
+exec insertProduct'9463516425544',
+'Shirts for Young Women GT0033 - White',
+'S M',
+'https://salt.tikicdn.com/cache/w1200/ts/product/a4/04/2f/c647444f0a4c2aaec1ba76a93d3e259f.jpg https://salt.tikicdn.com/cache/w1200/ts/product/e8/1e/25/2640f4126f9052364d3478216a01e231.jpg',
+'white',
+'70% COTTON, 30% POLYESTER
+Imported
+Button closure
+Machine Wash
+Cotton Blend Oxford
+50 Wash Tested Shrink & Fade Resistant
+Wrinkle No More Fabric For Easy Care'
+
+exec insertProduct '2604488473943',
+'Bicycle Fixed Gear Air Bike MK78',
+'0',
+'https://salt.tikicdn.com/cache/w1200/ts/product/9e/03/71/04a8efc747c8c3cab1868ed63baa0a2d.jpg',
+'pink white yellow',
+'The 4130 Steel Line earned its namesake from the double-butted 4130-grade chromoly steel used on the frame and fork that maximizes strength without making compromises on weight.
+FEATURES | Internal cable routing, seat stay rack mounts, water bottle cage mounts, a flip-flop hub, and integrated chain tensioners provide versatility while maintaining the clean aesthetic State Bicycle Co. is known for.
+LIGHTWEIGHT STRENGTH | Drilled high-flange hubs, an open faceplate stem, and the CNC’d seat post clamp not only look great but also help to shave some additional weight.'
+
+exec insertProduct '4269415114481',
+'Headphone MRD-XB450AP',
+'0',
+'https://salt.tikicdn.com/cache/w1200/media/catalog/producttmp/12/10/f8/0d0734c7a733f769aa6101056ecbab07.jpg',
+'blue white black red yellow',
+'30 millimeter drivers for rich, full frequency response
+Lightweight and comfortable on ear design
+Swivel design for portability
+47 ¼ inch (1.2 meter) tangle free, Y type cord'
+
+exec insertProduct '4250102889072',
+'ear phone Bluetooth I7s',
+'0',
+'https://salt.tikicdn.com/cache/w1200/ts/product/a1/bf/9c/11ceb3f82e7f17a1f05ba47688cbd086.jpg',
+'white',
+'Features1. Listening to songs and calls, supporting listening to songs and making calls,
+Features2. Caller number, last code callback, full intelligent Chinese and English tone prompts, power on, pairing, power off and off the phone, etc.'
+
+
 go
 create procedure insertSell
 	@idShop VARCHAR(50),
@@ -263,7 +338,6 @@ begin
 	end catch
 end
 
-
 go
 create procedure queryTotalMoney
 	@idOrder VARCHAR(50)
@@ -281,6 +355,24 @@ begin
 	end catch
 end		
 
+go
+create function totalMoneyFromHas
+(
+	@idOrder Varchar(50)
+)
+returns int
+as
+begin
+	declare @totalMoney int
+	set @totalMoney = (select sum(money) as totalMoney
+	from (select (unitPrice*amount) as money
+		from tblHas
+		where tblHas.idOrder = @idOrder) as totalMoneend)
+	return @totalMoney
+end
+go
+
+select dbo.totalMoneyFromHas('061219171019501')
 
 exec queryMoneyFromHas '061219171019501'
 
