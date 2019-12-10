@@ -42,8 +42,8 @@ EXEC dbo.insertShopAccount
 --EXEC dbo.procedureChangeProfileShop 'KH1', 'test1', 'test2', 'SHOP A', 111111111, 'address', 'email_1@gmail.com', 'link', '0', 'SPORT', 'Si';
 --EXEC dbo.writeReviewShop 'CH1','KH4',5,'Nice';
 
---SELECT * FROM dbo.tblAccount
---SELECT * FROM dbo.tblShop
+SELECT * FROM dbo.tblAccount
+SELECT * FROM dbo.tblShop
 SELECT * FROM dbo.tblRate
-SELECT dbo.[funcAvgRate]('CH1')
+--SELECT dbo.[funcAvgRate]('CH1')
 --SELECT AVG(Cast(star AS FLOAT)) FROM tblRate WHERE idShop = 'CH1';
