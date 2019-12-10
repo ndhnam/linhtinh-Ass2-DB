@@ -3,14 +3,14 @@ GO
 -- Phần của Linh --
 CREATE TABLE tblAccount
 (
-	id			VARCHAR(6)		PRIMARY KEY,			-- ID
+	id			VARCHAR(50)		PRIMARY KEY,			-- ID
 	username	VARCHAR(32)		NOT NULL,				-- Tên tài khoản
 	password	VARCHAR(100)	NOT NULL,				-- Mật khẩu
 );
 
 CREATE TABLE tblShop
 (
-	id				VARCHAR(6)		PRIMARY KEY,	-- ID
+	id				VARCHAR(50)		PRIMARY KEY,	-- ID
 	name			NCHAR(50)		NOT NULL,		-- Tên Shop
 	number			INT,							-- Số điện thoại
 	address			NCHAR(100),						-- Địa chỉ
@@ -28,8 +28,8 @@ ALTER TABLE dbo.tblShop
 
 CREATE TABLE tblRate
 (
-	idCustomer		VARCHAR(6)		NOT NULL,		-- id khách hàng 
-	idShop			VARCHAR(6)		NOT NULL,		-- id cửa hàng 
+	idCustomer		VARCHAR(50)		NOT NULL,		-- id khách hàng 
+	idShop			VARCHAR(50)		NOT NULL,		-- id cửa hàng 
 	star			INT				NOT NULL,		-- số sao khách hàng đánh giá 
 	describe		NCHAR(100),						-- đánh giá 
 	PRIMARY KEY(idCustomer, idShop),
@@ -81,7 +81,7 @@ ALTER TABLE tblSell
 -- Phần của Liêm --
 CREATE TABLE tblPromotion
 (
-	id					Char(9)		PRIMARY KEY,
+	id					VARCHAR(50)		PRIMARY KEY,
 	startTime			Date		NOT NULL,
 	endTime				Date		NOT NULL,
 	amountOfPromotion	Int			NOT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE tblPromotion
 	depreciate			Int			NOT NULL,
 	decreasePercent		Int			NOT NULL,
 	decreaseMax			Int			NOT NULL,
-	idShop				VARCHAR(6)	NOT NULL
+	idShop				VARCHAR(50)	NOT NULL
 );
  ALTER TABLE tblPromotion
  ADD CONSTRAINT fk_IdShop
@@ -100,7 +100,7 @@ CREATE TABLE tblPromotion
 
 CREATE TABLE tblTransportation
 (
-	id				Char(9)		PRIMARY KEY,
+	id				VARCHAR(50)		PRIMARY KEY,
 	nameTrans		Nchar(50)	NOT NULL,
 	hotline			Int			NOT NULL,
 	mail			Char(50)	NOT NULL,
@@ -110,15 +110,15 @@ CREATE TABLE tblTransportation
 
 CREATE TABLE tblOrder
 (
-	id				Char(9)		PRIMARY KEY,
+	id				VARCHAR(50)		PRIMARY KEY,
 	methodOfPayment Nchar(50)	NOT NULL,
 	bookingTime		Date		NOT NULL,
 	deliveryTime	Date		NOT NULL,
 	orderStatus		Nchar(50)	NOT NULL,
-	transportCode	Char(50)	NOT NULL,
+	transportCode	VARCHAR(50)	NOT NULL,
 	transportCost	Int			NOT NULL,
-	idCustomer		Char(9)	NOT NULL,
-	promotionCode	Char(50)	NOT NULL
+	idCustomer		VARCHAR(50)	NOT NULL,
+	promotionCode	VARCHAR(50)	NOT NULL
 );
 
 ALTER TABLE dbo.tblOrder
@@ -132,23 +132,23 @@ ON DELETE CASCADE
 
 -- Phần của Tâm --
 CREATE TABLE tblCART(
-    id          nvarchar(9) NOT NULL,
+    id         VARCHAR(50) NOT NULL,
     PRIMARY KEY(id),
     --id nvarchar(9) primary key,
-    idclient    nvarchar(10) NOT NULL,
+    idclient   VARCHAR(50) NOT NULL,
     --foreign key(idclient) references Client(id)
 );
 GO
 CREATE TABLE tblADD_CART(
-    idcart      nvarchar(9) NOT NULL,
+    idcart      VARCHAR(50) NOT NULL,
     idproduct   VARCHAR(50) NOT NULL,
-    idshop      VARCHAR(6) NOT NULL,
+    idshop      VARCHAR(50) NOT NULL,
     PRIMARY KEY(idcart,idproduct,idshop),
     quantity    INT )
 ;
 GO
 CREATE TABLE tblCATEGORY(
-    id              CHAR(3) NOT NULL,
+    id             VARCHAR(50) NOT NULL,
     PRIMARY KEY(id),
     name            nvarchar(30),
     quantity        INT         DEFAULT 0           --- tt dẫn xuất
@@ -156,7 +156,7 @@ CREATE TABLE tblCATEGORY(
 GO
 CREATE TABLE tblBELONG_CATEGORY(
     idproduct   VARCHAR(50) NOT NULL,
-    idcate      CHAR(3) NOT NULL,
+    idcate      VARCHAR(50) NOT NULL,
     PRIMARY KEY(idcate,idproduct)
 );
 GO
@@ -164,20 +164,20 @@ GO
 -- Phần của Ly --
 CREATE TABLE tblCustomer 
 (
-	id_customer VARCHAR(10) PRIMARY KEY,
+	id_customer VARCHAR(50) PRIMARY KEY,
 	last_name NVARCHAR(20), 
 	first_name NVARCHAR(20),
 	email VARCHAR(100) NOT NULL,
 	sex BIT,
 	date_of_birth DATE,
-	id_intro VARCHAR(15),
-	id_reduce VARCHAR(15)
+	id_intro VARCHAR(50),
+	id_reduce VARCHAR(50)
 );
 
 CREATE TABLE tblTelephoneNumber
 (
 	tel_number VARCHAR(11),
-	id_customer VARCHAR(10),
+	id_customer VARCHAR(50),
 	PRIMARY KEY(tel_number, id_customer)
 ); 
 ALTER TABLE tblTelephoneNumber 
@@ -187,7 +187,7 @@ FOREIGN KEY(id_customer) REFERENCES tblCustomer(id_customer);
 CREATE TABLE tblAdrress 
 (
 	addr NVARCHAR(100), 
-	id_customer VARCHAR(10),
+	id_customer VARCHAR(50),
 	province NVARCHAR(100),
 	city NVARCHAR(100),
 	ward NVARCHAR(100),
