@@ -47,6 +47,10 @@ SELECT * FROM dbo.tblShop
 SELECT * FROM dbo.tblRate
 DELETE FROM dbo.tblAccount
 DELETE FROM dbo.tblShop
+DELETE FROM dbo.tblRate
+
+DELETE FROM dbo.tblAccount WHERE id = 'CH0007'
+DELETE FROM dbo.tblShop WHERE id = 'CH0007'
 ALTER TABLE dbo.tblShop DROP CONSTRAINT fk_shop_acc_id;
 ALTER TABLE dbo.tblRate DROP CONSTRAINT fk_rate_shop_id;
 DROP TABLE dbo.tblAccount;
