@@ -144,6 +144,21 @@ exec sortTransportationByCost 0
 
 -- hàm
 
+CREATE FUNCTION totalMoneyByDepreciate
+(
+	@idOrder VARCHAR(50)
+)
+returns float
+BEGIN
+	declare @sum int
+	set @sum = totalMoneyFromHas(@idOrder)
+	if(@sum >= (select minTotal from tblOrder join tblPromotion on promotionCode = id ))
+	begin
+		set @sum = totalMoneyFromHas(@idOrder)+(select costLevel From tblTransportation join tblOrder on tblTransportation.id = tblOrder.transportCode)-(select depreciate from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id )
+	end
+	return @sum
+END
+
 
 
 
