@@ -12,7 +12,7 @@ CREATE TABLE tblShop
 	id				VARCHAR(6)		PRIMARY KEY,	-- ID
 	name			VARCHAR(50)	NOT NULL,			-- Tên Shop
 	number			INT,							-- Số điện thoại
-	address			VARCHAR(50),					-- Địa chỉ
+	address			NCHAR(50),					-- Địa chỉ
 	email			VARCHAR(50),					-- Email
 	avatar			VARCHAR(100),					-- Ảnh đại diện
 	classify		INT,							-- Phân loại (0 - không chuyên, 1 - chuyên)
