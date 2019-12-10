@@ -45,5 +45,23 @@ EXEC dbo.insertShopAccount
 SELECT * FROM dbo.tblAccount
 SELECT * FROM dbo.tblShop
 SELECT * FROM dbo.tblRate
+DELETE FROM dbo.tblAccount
+DELETE FROM dbo.tblShop
+ALTER TABLE dbo.tblShop DROP CONSTRAINT fk_shop_acc_id;
+ALTER TABLE dbo.tblRate DROP CONSTRAINT fk_rate_shop_id;
+DROP TABLE dbo.tblAccount;
+DROP TABLE dbo.tblShop;
+DROP TABLE dbo.tblRate;
+DROP PROCEDURE dbo.insertShopAccount;
+DROP PROCEDURE dbo.procedureChangePassword;
+DROP PROCEDURE dbo.procedureChangeProfileShop;
+DROP PROCEDURE dbo.writeReviewShop;
+DROP FUNCTION dbo.funcAvgRate;
 --SELECT dbo.[funcAvgRate]('CH1')
 --SELECT AVG(Cast(star AS FLOAT)) FROM tblRate WHERE idShop = 'CH1';
+
+DECLARE @myChar CHAR(100) , @myVarchar VARCHAR(100)
+SET @myChar = 'SQL'
+SET @myVarchar = 'SQL'
+SELECT '[BEGIN]' + @myChar + '[END]' AS CHAR_Data
+SELECT '[BEGIN]' + @myVarchar + '[END]' AS VARCHAR_Data
