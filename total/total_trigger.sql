@@ -15,7 +15,11 @@ BEGIN
 END
 go
 drop trigger check_amount_of_promotion
+<<<<<<< HEAD
 exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'ch??ng trình khuy?n mãi t?t 2020',500000,'?? gia d?ng',150000,10,200000,'ch0001'
+=======
+exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuyễn mãi tết 2020',500000,'đồ gia dụng',150000,10,200000,'ch0001'
+>>>>>>> fec95bafb62f6779a3a24f7d2a40c56a7b7e95bb
 
 
 	--thay doi so luong khuyen mai
@@ -35,7 +39,11 @@ exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'ch??ng trình khuy?n m
  go
  drop trigger update_amount_of_Promotion
 
+<<<<<<< HEAD
  exec insertOrder 'MDH014','Chuy?n kho?n','2019-12-01','2019-12-05','?ã giao','GRAB',23000,'','BLACK'
+=======
+ exec insertOrder 'MDH014','Chuyển khoản','2019-12-01','2019-12-05','Đã giao','GRAB',23000,'','BLACK'
+>>>>>>> fec95bafb62f6779a3a24f7d2a40c56a7b7e95bb
 select * from tblPromotion
 select * from tblOrder
 select * from tblTransportation
