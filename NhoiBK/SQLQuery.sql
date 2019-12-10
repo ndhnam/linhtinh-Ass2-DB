@@ -4,7 +4,7 @@ Go
 -- Tạo bảng dữ liệu
 
 ------------------------Table cua NHOIBK------------------------------------------
-alter TABLE tblPromotion
+CREATE TABLE tblPromotion
 (
 	id					VARCHAR(6)	PRIMARY KEY,
 	startTime			text		NOT NULL,

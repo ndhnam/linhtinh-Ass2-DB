@@ -2,7 +2,7 @@
 USE dbTipee
 Go
 -- add dữ liệu mẫu
-alter PROCEDURE insertPromotion 
+CREATE PROCEDURE insertPromotion 
 	@id					Varchar(60),
 	@startTime			date,
 	@endTime			date,
@@ -92,3 +92,14 @@ exec insertOrder 'MDH004','Trực tiếp','2019-12-09','2019-12-16','Đang giao'
 exec insertOrder 'MDH005','Trực tiếp','2019-11-19','2019-11-21','Đã giao','ALOGN',15000,'','FREESHIP'
 go
 
+CREATE TRIGGER check_amount_of_promotion ON tblPromotion FOR INSERT AS
+BEGIN
+	DECLARE @amountOfPromotion INT
+	SET @amountOfPromotion = (SELECT amountOfPromotion FROM inserted)
+	IF (@amountOfPromotion < 0)
+	BEGIN
+		PRINT 'Error: amount < 0'
+		ROLLBACK
+	END
+END
+go
