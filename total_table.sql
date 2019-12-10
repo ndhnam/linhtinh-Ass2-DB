@@ -139,6 +139,14 @@ CREATE TABLE tblCART(
     --foreign key(idclient) references Client(id)
 );
 GO
+ALTER TABLE tblCART
+	ADD 
+	CONSTRAINT	fk_cart_customer		
+	FOREIGN KEY (idclient)
+	REFERENCES tblCustomer(id_customer)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE;
+go
 CREATE TABLE tblADD_CART(
     idcart      VARCHAR(50) NOT NULL,
     idproduct   VARCHAR(50) NOT NULL,
@@ -147,6 +155,22 @@ CREATE TABLE tblADD_CART(
     quantity    INT )
 ;
 GO
+ALTER TABLE tblADD_CART
+	ADD 
+		CONSTRAINT	fk_cart_addcart		FOREIGN KEY (idcart)
+	REFERENCES tblCART(id)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+		CONSTRAINT	fk_pro_addcart		FOREIGN KEY (idproduct)
+	REFERENCES tblProduct(id)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+		CONSTRAINT	fk_shop_addcart		FOREIGN KEY (idshop)
+	REFERENCES tblShop(id)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+		CONSTRAINT	check_quantity		CHECK(quantity>0)
+go
 CREATE TABLE tblCATEGORY(
     id             VARCHAR(50) NOT NULL,
     PRIMARY KEY(id),
@@ -154,11 +178,26 @@ CREATE TABLE tblCATEGORY(
     quantity        INT         DEFAULT 0           --- tt dẫn xuất
 );
 GO
+ALTER TABLE tblCATEGORY
+	ADD 
+		CONSTRAINT	check_quantity_cate 	CHECK(quantity>=0);
+go
 CREATE TABLE tblBELONG_CATEGORY(
     idproduct   VARCHAR(50) NOT NULL,
     idcate      VARCHAR(50) NOT NULL,
     PRIMARY KEY(idcate,idproduct)
 );
+GO
+ALTER TABLE tblBELONG_CATEGORY
+	ADD 
+	CONSTRAINT	fk_cate	FOREIGN KEY (idcate)
+	REFERENCES tblCATEGORY(id)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+	CONSTRAINT	fk_cate_pro	FOREIGN KEY (idproduct)
+	REFERENCES tblProduct(id)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE;
 GO
 
 -- Phần của Ly --
