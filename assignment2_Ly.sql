@@ -1,38 +1,74 @@
-﻿CREATE DATABASE dbTipee
+﻿-- Truc Ly 1710187 --
+CREATE DATABASE dbTipee
 GO
 USE dbTipee
 GO 
 
+-- Table Customer
 CREATE TABLE tblCustomer 
 (
-	id_customer VARCHAR(10) PRIMARY KEY,
-	last_name NVARCHAR(20), 
-	first_name NVARCHAR(20),
+	id_customer VARCHAR(6) PRIMARY KEY,
+	last_name NVARCHAR(20) NOT NULL, 
+	first_name NVARCHAR(20) NOT NULL,
 	email VARCHAR(100) NOT NULL,
-	sex BIT,
-	date_of_birth DATE,
-	id_intro VARCHAR(15),
-	id_reduce VARCHAR(15)
+	sex BIT NOT NULL, -- 0: Female, 1: Male
+	date_of_birth DATE NOT NULL,
+	id_intro VARCHAR(6),
+	id_reduce VARCHAR(6), 
+	num_of_bills INT
 );
 
+-- Table Telephone
 CREATE TABLE tblTelephoneNumber
 (
 	tel_number VARCHAR(11),
-	id_customer VARCHAR(10),
+	id_customer VARCHAR(6),
 	PRIMARY KEY(tel_number, id_customer)
 ); 
 
+-- Table Address
 CREATE TABLE tblAdrress 
 (
-	addr NVARCHAR(100), 
-	id_customer VARCHAR(10),
+	stt int, 
+	id_customer VARCHAR(6),
 	province NVARCHAR(100),
 	city NVARCHAR(100),
 	ward NVARCHAR(100),
 	detail NTEXT,
-	type_address VARCHAR(10),
-	PRIMARY KEY(addr, id_customer)
+	type_address NVARCHAR(30),
+	PRIMARY KEY(stt, id_customer)
 );
+
+-- Table Bill
+CREATE TABLE tblOrder
+(
+	id				VARCHAR(6)		PRIMARY KEY,
+	methodOfPayment Nchar(50)	NOT NULL,
+	bookingTime		Date		NOT NULL,
+	deliveryTime	Date		NOT NULL,
+	orderStatus		Nchar(50)	NOT NULL,
+	transportCode	Char(50)	NOT NULL,
+	transportCost	Int			NOT NULL,
+	idCustomer		VARCHAR(6)	NOT NULL,
+	promotionCode	Char(50)	NOT NULL
+);
+
+-- Table Order
+CREATE TABLE tblOrdering
+(
+	id_bill VARCHAR(6) PRIMARY KEY,
+	id_customer VARCHAR(6),
+	time_ordering DATE
+)
+
+ALTER TABLE tblOrdering
+ADD CONSTRAINT FK_OrderOdering
+FOREIGN KEY(id_bill) REFERENCES tblOrder(id)
+
+-- Foreign Key
+ALTER TABLE tblCustomer
+ADD CONSTRAINT FK_Customer
+FOREIGN KEY(id_intro) REFERENCES tblCustomer(id_customer)
 
 ALTER TABLE tblTelephoneNumber 
 ADD CONSTRAINT FK_CustomerTelephoneNumber
@@ -42,89 +78,92 @@ ALTER TABLE tblAdrress
 ADD CONSTRAINT FK_Customer_Address
 FOREIGN KEY(id_customer) REFERENCES tblCustomer(id_customer);
 
+ALTER TABLE tblOrdering 
+ADD CONSTRAINT FK_CustomerOrdering
+FOREIGN KEY(id_customer) REFERENCES tblCustomer(id_customer);
+
 GO 
+-- Customer Insert Information
 CREATE PROCEDURE insertCustomer
-	@id_customer VARCHAR(10),
+	@id_customer VARCHAR(6),
 	@last_name NVARCHAR(20), 
 	@first_name NVARCHAR(20),
 	@email VARCHAR(100),
 	@sex BIT,
-	@date_of_birth DATE,
-	@id_intro VARCHAR(15),
-	@id_reduce VARCHAR(15)
+	@date_of_birth DATE
 AS
 BEGIN
 	BEGIN TRY
 		INSERT INTO tblCustomer
-		        ( id_customer ,
-		          last_name ,
+		        ( id_customer,
+				  last_name ,
 		          first_name ,
-		          email ,
+		          email ,	
 		          sex ,
-		          date_of_birth ,
-		          id_intro ,
-		          id_reduce
+		          date_of_birth
 		        )
-		VALUES  ( @id_customer ,
-		          @last_name ,
+		VALUES  ( @id_customer,
+				  @last_name ,
 		          @first_name ,
 		          @email ,
 		          @sex ,
-		          @date_of_birth ,
-		          @id_intro ,
-		          @id_reduce
+		          @date_of_birth
 		        )
-		PRINT 'Successful!!!'
+		PRINT 'Successful!'
 		RETURN @@ROWCOUNT
     END TRY 
 	BEGIN CATCH 
-		PRINT 'Error!!!'
+		PRINT 'Error Insert Information!'
 		RETURN 0
 	END CATCH
 END;
 
-EXEC insertCustomer @id_customer = '1710187', -- varchar(10)
-    @last_name = N'Nguyen', -- nvarchar(20)
-    @first_name = N'Ly', -- nvarchar(20)
-    @email = 'truclybk.cs@gmail.com', -- varchar(100)
-    @sex = 0, -- bit
-    @date_of_birth = '19990218', -- date
-    @id_intro = '', -- varchar(15)
-    @id_reduce = '' -- varchar(15)
+-- Insert Data Customer
+EXEC insertCustomer 'KH0001', 'Nguyen', 'Ly','truclybk.cs@gmail.com', 0,'19990218'
+EXEC insertCustomer 'KH0002', 'Nguyen', 'Nam', 'namnguyen@gmail.com', 0, '19981230'
+EXEC insertCustomer 'KH0003', 'Huynh', 'Linh', 'hpplinh@gmail.com', 1, '19970101'
+EXEC insertCustomer 'KH0004', 'Tran', 'Tam', 'tvtam@hcmut.edu.vn', 1, '20000518'
+EXEC insertCustomer 'KH0005', 'Ngo', 'Liem', 'ntliem@hcmut.edu.vn', 1, '20011108'
 
 GO 
+-- Insert Telephone Number
 CREATE PROCEDURE insertTelephoneNumber
 	@tel_number VARCHAR(11),
-	@id_customer VARCHAR(10)
+	@id_customer VARCHAR(6)
 AS
 BEGIN
 	BEGIN TRY
 		INSERT INTO tblTelephoneNumber(tel_number, id_customer) VALUES (@tel_number, @id_customer)
-		PRINT 'Successful!!!'
+		PRINT 'Successful!'
 		RETURN @@ROWCOUNT
     END TRY
 	BEGIN CATCH
-		PRINT 'Error!'
+		PRINT 'Error Insert Telephone Number!'
 		RETURN 0
 	END CATCH
 END;
 
-EXEC insertTelephoneNumber @tel_number = '0834562109', -- varchar(11)
-    @id_customer = '1710187' -- varchar(10)
+-- Insert Data Telephone Number
+EXEC insertTelephoneNumber '0834562109', 'KH0001'
+EXEC insertTelephoneNumber '0395914514', 'KH0002'
+EXEC insertTelephoneNumber '0123456789', 'KH0003'
+EXEC insertTelephoneNumber '0998656689', 'KH0005'
+
 GO 
+-- Insert Address
 CREATE PROCEDURE insertAddress
-	@addr NVARCHAR(100), 
-	@id_customer VARCHAR(10),
+	@stt INT, 
+	@id_customer VARCHAR(6),
 	@province NVARCHAR(100),
 	@city NVARCHAR(100),
 	@ward NVARCHAR(100),
 	@detail NTEXT,
-	@type_address VARCHAR(10)
+	@type_address VARCHAR(30)
 AS
 BEGIN
 	BEGIN TRY 
 		INSERT INTO tblAdrress
-		        ( addr ,
+		        ( stt ,
 		          id_customer ,
 		          province ,
 		          city ,
@@ -132,7 +171,7 @@ BEGIN
 		          detail ,
 		          type_address
 		        )
-		VALUES  ( @addr ,
+		VALUES  ( @stt ,
 		          @id_customer ,
 		          @province ,
 		          @city ,
@@ -140,47 +179,70 @@ BEGIN
 		          @detail ,
 		          @type_address
 		        )
-		PRINT 'Successful!!!'
+		PRINT 'Successful!'
 		RETURN @@ROWCOUNT
 	END TRY
 	BEGIN CATCH 
-		PRINT 'Error!'
+		PRINT 'Error Insert Address!'
 		RETURN 0
 	END CATCH
 END;
 
-EXEC insertAddress @addr = N'', -- nvarchar(100)
-    @id_customer = '1710187', -- varchar(10)
-    @province = N'An Giang', -- nvarchar(100)
-    @city = N'Long Xuyên', -- nvarchar(100)
-    @ward = N'Mỹ Hòa Hưng', -- nvarchar(100)
-    @detail = NULL, -- ntext
-    @type_address = '' -- varchar(10)
-	
---GO 
---CREATE TRIGGER checkDateOfBirth ON tblCustomer FOR INSERT AS
---BEGIN 
-	
---END
+-- Insert Data Address
+EXEC insertAddress 1,'KH0001','An Giang','Long Xuyên','Mỹ Hòa Hưng',NULL, ''
+EXEC insertAddress 2,'KH0002','Hồ Chí Minh','Quận 10','P8',NULL, ''
+EXEC insertAddress 3,'KH0003','Tây Ninh','Châu Thành','ABC',NULL, ''
+EXEC insertAddress 4,'KH0004','Đồng Tháp','Sa Đéc','XYZ',NULL, ''
+EXEC insertAddress 5,'KH0005','An Giang','Châu Đốc','Mỹ Bình',NULL, ''
+
 
 GO 
-CREATE PROCEDURE queryCustomerInOneCity
+-- Find all customers in one city and sort by ID
+CREATE PROCEDURE queryCustomersInOneCity
 	@province nvarchar(100)
 AS
 BEGIN
 	BEGIN TRY
-		SELECT tblCustomer.id_customer, last_name, first_name, tel_number
+		SELECT tblCustomer.id_customer, first_name, tel_number
 		FROM tblAdrress, tblCustomer, tblTelephoneNumber
-		WHERE tblAdrress.province = @province AND tblAdrress.id_customer = tblCustomer.id_customer
+		WHERE tblAdrress.province = @province AND tblAdrress.id_customer = tblCustomer.id_customer AND tblAdrress.id_customer = tblTelephoneNumber.id_customer
 		ORDER BY tblCustomer.id_customer
 	END TRY 
 	BEGIN CATCH
-		PRINT 'error'
+		PRINT 'Cannot found!'
 	END CATCH
 END
 
-EXEC dbo.queryCustomerInOneCity @province = N'An Giang' -- nvarchar(100)
+EXEC queryCustomersInOneCity 'An Giang' 
+EXEC queryCustomersInOneCity 'Hồ Chí Minh'
+EXEC queryCustomersInOneCity 'Hà Nội'
+EXEC queryCustomersInOneCity 'Đồng Tháp'
 
-GO
-CREATE PROCEDURE query
+
+--Find all bills
+CREATE PROCEDURE queryBillsBeforeOneDate
+	@date Date
+AS
+BEGIN
+	BEGIN TRY 
+		SELECT SUM(
+		FROM tblCustomer, tblOrdering, tblOrder
+        WHERE time_ordering < @date
+        GROUP BY orderStatus 
+		HAVING COUNT(orderStatus) > 0
+		ORDER BY transportCode
+	END TRY
+    BEGIN CATCH
+	PRINT 'Cannot found!'
+	END CATCH
+END 
+
+EXEC
+
+
+
+--Count bills
+CREATE FUNCTION countBills
+(
+)
 
