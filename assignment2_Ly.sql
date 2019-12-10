@@ -64,6 +64,7 @@ CREATE TABLE tblOrdering
 ALTER TABLE tblOrdering
 ADD CONSTRAINT FK_OrderOdering
 FOREIGN KEY(id_bill) REFERENCES tblOrder(id)
+ALTER TABLE dbo.tblOrdering DROP CONSTRAINT FK_OrderOdering
 
 -- Foreign Key
 ALTER TABLE tblCustomer
@@ -125,6 +126,7 @@ EXEC insertCustomer 'KH0003', 'Huynh', 'Linh', 'hpplinh@gmail.com', 1, '19970101
 EXEC insertCustomer 'KH0004', 'Tran', 'Tam', 'tvtam@hcmut.edu.vn', 1, '20000518'
 EXEC insertCustomer 'KH0005', 'Ngo', 'Liem', 'ntliem@hcmut.edu.vn', 1, '20011108'
 
+
 GO 
 -- Insert Telephone Number
 CREATE PROCEDURE insertTelephoneNumber
@@ -143,11 +145,13 @@ BEGIN
 	END CATCH
 END;
 
+
 -- Insert Data Telephone Number
 EXEC insertTelephoneNumber '0834562109', 'KH0001'
 EXEC insertTelephoneNumber '0395914514', 'KH0002'
 EXEC insertTelephoneNumber '0123456789', 'KH0003'
 EXEC insertTelephoneNumber '0998656689', 'KH0005'
+
 
 GO 
 -- Insert Address
@@ -195,6 +199,46 @@ EXEC insertAddress 3,'KH0003','Tây Ninh','Châu Thành','ABC',NULL, ''
 EXEC insertAddress 4,'KH0004','Đồng Tháp','Sa Đéc','XYZ',NULL, ''
 EXEC insertAddress 5,'KH0005','An Giang','Châu Đốc','Mỹ Bình',NULL, ''
 
+GO 
+CREATE PROCEDURE insertOrdering
+	@id_bill VARCHAR(6),
+	@id_customer VARCHAR(6),
+	@time_ordering DATE
+AS 
+BEGIN 
+	BEGIN TRY 
+		INSERT INTO tblOrdering (id_bill, id_customer, time_ordering) VALUES (@id_bill, @id_customer, @time_ordering)
+		PRINT 'Successfull!'
+	END TRY 
+	BEGIN CATCH
+		PRINT ERROR_MESSAGE()
+	END CATCH
+END
+DROP PROCEDURE dbo.insertOrdering
+EXEC insertOrdering 'MDH001', 'KH0001', '20191212'
+EXEC insertOrdering 'MDH002', 'KH0002', '20190312'
+EXEC insertOrdering 'MDH003', 'KH0002', '20190312'
+EXEC insertOrdering 'MDH004', 'KH0002', '20190312'
+SELECT * FROM dbo.tblOrdering
+SELECT * FROM dbo.tblCustomer
+
+GO 
+CREATE TRIGGER updateTotalBills ON tblOrdering AFTER INSERT AS
+BEGIN
+	DECLARE @count_id_bill INT = 
+	(
+		SELECT COUNT (id_bill) 
+		FROM tblOrdering WHERE id_customer = (SELECT id_customer FROM Inserted)
+	)
+	UPDATE tblCustomer SET num_of_bills = @count_id_bill 
+	WHERE id_customer = (SELECT id_customer FROM Inserted)
+END
+
+
+
+GO
+CREATE TRIGGER 
+
 
 GO 
 -- Find all customers in one city and sort by ID
@@ -218,7 +262,6 @@ EXEC queryCustomersInOneCity 'Hồ Chí Minh'
 EXEC queryCustomersInOneCity 'Hà Nội'
 EXEC queryCustomersInOneCity 'Đồng Tháp'
 
-
 --Find all bills
 CREATE PROCEDURE queryBillsBeforeOneDate
 	@date Date
@@ -236,9 +279,6 @@ BEGIN
 	PRINT 'Cannot found!'
 	END CATCH
 END 
-
-EXEC
-
 
 
 --Count bills
