@@ -17,14 +17,16 @@ END
 go
 drop trigger check_amount_of_promotion
 <<<<<<< HEAD
+<<<<<<< HEAD
 go
 =======
 <<<<<<< HEAD
 exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'ch??ng trình khuy?n mãi t?t 2020',500000,'?? gia d?ng',150000,10,200000,'ch0001'
 =======
 >>>>>>> 12edffaf007d53022910e529222b94f437e4c143
+=======
+>>>>>>> 515323be6b987f7e10ce93f502a81104284cd58e
 exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuyễn mãi tết 2020',500000,'đồ gia dụng',150000,10,200000,'ch0001'
->>>>>>> fec95bafb62f6779a3a24f7d2a40c56a7b7e95bb
 
 
 	--thay doi so luong khuyen mai
@@ -45,12 +47,7 @@ exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuy�
  go
 
  drop trigger update_amount_of_Promotion
-
-<<<<<<< HEAD
- exec insertOrder 'MDH014','Chuy?n kho?n','2019-12-01','2019-12-05','?ã giao','GRAB',23000,'','BLACK'
-=======
  exec insertOrder 'MDH014','Chuyển khoản','2019-12-01','2019-12-05','Đã giao','GRAB',23000,'','BLACK'
->>>>>>> fec95bafb62f6779a3a24f7d2a40c56a7b7e95bb
 select * from tblPromotion
 select * from tblOrder
 select * from tblTransportation
@@ -98,4 +95,49 @@ BEGIN
 		PRINT 'SUCCESS'
 END
 GO
+<<<<<<< HEAD
 >>>>>>> 12edffaf007d53022910e529222b94f437e4c143
+=======
+
+--- phần của Nam ---
+create trigger check_amount_sell on tblSell for insert as
+begin
+	declare @amount int
+	set @amount = (select amount from inserted)
+	if (@amount < 0)
+	begin
+		print 'Error: amount < 0'
+		rollback
+	end
+end
+GO
+create trigger check_amount_has on tblHas for insert as
+begin
+	declare @amount int
+	declare @amountSell int
+	declare @idProduct Varchar(50)
+	declare @idShop VARCHAR(50)
+	set @amount = (select amount from inserted)
+	set @idProduct = (select idProduct from inserted)
+	set @idShop = (select idShop from inserted)
+	set @amountSell = (select amount from tblSell where @idProduct = tblSell.idProduct and @idShop = tblSell.idShop)
+	if (@amount <= 0 and @amount > @amountSell )
+	begin
+		print 'Error: amount <= 0 or amount > amountSell'
+		rollback
+	end
+end
+GO
+create trigger update_amount_sell on tblHas after insert as
+begin
+	update tblSell
+	set tblSell.amount = tblSell.amount - (
+		select amount
+		from inserted
+		where idShop = tblSell.idShop and idProduct = tblSell.idProduct
+	)
+	from tblSell
+	join inserted on tblSell.idProduct = inserted.idProduct and tblSell.idShop = inserted.idShop
+end
+GO
+>>>>>>> 515323be6b987f7e10ce93f502a81104284cd58e

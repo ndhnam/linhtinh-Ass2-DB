@@ -19,9 +19,13 @@ CREATE TABLE tblShop
 	typesOfShop		NVARCHAR(30),						-- Sản phẩm chuyên về (danh mục)
 	distribution	NVARCHAR(10),						-- Sỉ/lẻ
 	total_rate		INT,							-- Tổng lượt đánh giá --
-	CONSTRAINT fk_shop_acc_id FOREIGN KEY (id) REFERENCES tblAccount(id),
+	--CONSTRAINT fk_shop_acc_id FOREIGN KEY (id) REFERENCES tblAccount(id),
 );
-
+ALTER TABLE dbo.tblShop
+	ADD CONSTRAINT fk_shop_acc_id
+	FOREIGN KEY (id) REFERENCES tblAccount(id)
+	ON DELETE CASCADE
+GO
 CREATE TABLE tblRate
 (
 	idCustomer		VARCHAR(6)		NOT NULL,		-- id khách hàng 
@@ -29,10 +33,14 @@ CREATE TABLE tblRate
 	star			INT				NOT NULL,		-- số sao khách hàng đánh giá 
 	describe		NVARCHAR(100),						-- đánh giá 
 	PRIMARY KEY(idCustomer, idShop),
-	CONSTRAINT fk_rate_shop_id FOREIGN KEY (idShop) REFERENCES tblShop(id)
+	--CONSTRAINT fk_rate_shop_id FOREIGN KEY (idShop) REFERENCES tblShop(id)
 	--CONSTRAINT fk_rate_cus_id FOREIGN KEY (idCustomer) REFERENCES tblCustomer(id_customer)
 );
-
+ALTER TABLE dbo.tblRate
+	ADD CONSTRAINT fk_rate_shop_id 
+	FOREIGN KEY (idShop) REFERENCES tblShop(id)
+	ON DELETE CASCADE
+GO
 -- Chạy bảng khách hàng trước mới chạy cái này nhaaaa!
 ALTER TABLE dbo.tblRate
 	ADD CONSTRAINT fk_rate_cus_id
@@ -131,24 +139,25 @@ FOREIGN KEY(idCustomer) REFERENCES tblCustomer(id)
 ON DELETE CASCADE
 
 -- Phần của Tâm --
+GO
 CREATE TABLE tblCART(
-    id         VARCHAR(50) NOT NULL,
+    id          VARCHAR(50) NOT NULL,
     PRIMARY KEY(id),
     --id nvarchar(9) primary key,
-    idclient   VARCHAR(50) NOT NULL,
+    idclient    VARCHAR(50) NOT NULL,
     --foreign key(idclient) references Client(id)
 );
 GO
 CREATE TABLE tblADD_CART(
-    idcart      VARCHAR(50) NOT NULL,
+    idcart      nvarchar(9) NOT NULL,
     idproduct   VARCHAR(50) NOT NULL,
-    idshop      VARCHAR(50) NOT NULL,
+    idshop      VARCHAR(6) NOT NULL,
     PRIMARY KEY(idcart,idproduct,idshop),
     quantity    INT )
 ;
 GO
 CREATE TABLE tblCATEGORY(
-    id             VARCHAR(50) NOT NULL,
+    id              CHAR(3) NOT NULL,
     PRIMARY KEY(id),
     name            nvarchar(30),
     quantity        INT         DEFAULT 0           --- tt dẫn xuất
@@ -156,15 +165,58 @@ CREATE TABLE tblCATEGORY(
 GO
 CREATE TABLE tblBELONG_CATEGORY(
     idproduct   VARCHAR(50) NOT NULL,
-    idcate      VARCHAR(50) NOT NULL,
+    idcate      CHAR(3) NOT NULL,
     PRIMARY KEY(idcate,idproduct)
 );
+GO
+ALTER TABLE tblCART
+    ADD
+        CONSTRAINT      fk_cart_customer        FOREIGN KEY (idclient)
+    REFERENCES tblCustomer(id_customer)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+GO
+--ALTER TABLE tblADD_CART   idproduct   VARCHAR(50);
+GO
+ 
+ALTER TABLE tblADD_CART
+    ADD
+        CONSTRAINT  fk_cart_addcart     FOREIGN KEY (idcart)
+    REFERENCES tblCART(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+        CONSTRAINT  fk_pro_addcart      FOREIGN KEY (idproduct)
+    REFERENCES tblProduct(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+        CONSTRAINT  fk_shop_addcart     FOREIGN KEY (idshop)
+    REFERENCES tblShop(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+        CONSTRAINT  check_quantity      CHECK(quantity>0)
+GO
+ 
+ALTER TABLE tblCATEGORY
+    ADD
+        CONSTRAINT  check_quantity_cate     CHECK(quantity>=0);
+GO
+ 
+ALTER TABLE tblBELONG_CATEGORY
+    ADD
+    CONSTRAINT  fk_cate FOREIGN KEY (idcate)
+    REFERENCES tblCATEGORY(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    CONSTRAINT  fk_cate_pro FOREIGN KEY (idproduct)
+    REFERENCES tblProduct(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
 GO
 
 -- Phần của Ly --
 CREATE TABLE tblCustomer 
 (
-	id_customer VARCHAR(50) PRIMARY KEY,
+	id_customer VARCHAR(6) PRIMARY KEY,
 	last_name NVARCHAR(20), 
 	first_name NVARCHAR(20),
 	email VARCHAR(100) NOT NULL,
@@ -198,3 +250,4 @@ CREATE TABLE tblAdrress
 ALTER TABLE tblAdrress
 ADD CONSTRAINT FK_Customer_Address
 FOREIGN KEY(id_customer) REFERENCES tblCustomer(id_customer);
+GO

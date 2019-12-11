@@ -32,18 +32,27 @@ CREATE TABLE tblBELONG_CATEGORY(
 );
 go
 /*Insert data*/
-INSERT INTO tblCART VALUES ('1',12);
+INSERT INTO tblCART VALUES ('C01','KH0001');
+INSERT INTO tblCART VALUES ('C02','KH0002');
+INSERT INTO tblCART VALUES ('C03','KH0003');
+INSERT INTO tblCART VALUES ('C04','KH0004');
+INSERT INTO tblCART VALUES ('C05','KH0005');
 
-INSERT INTO tblADD_CART VALUES ('1','123a',167,5);
+INSERT INTO tblADD_CART VALUES ('CO1','8865872832669','CH0001',5);
+INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0001',2);
+INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0002',1);
+INSERT INTO tblADD_CART VALUES ('CO2','4424616287949','CH0001',2);
 
-INSERT INTO tblCATEGORY VALUES ('EL',N'Electronics',1);
-INSERT INTO tblCATEGORY VALUES ('FA',N'Fashion',1);
-INSERT INTO tblCATEGORY VALUES ('BO',N'Book',1);
-INSERT INTO tblCATEGORY VALUES ('FO',N'FOOD',1);
-INSERT INTO tblCATEGORY VALUES ('ST',N'Stationery',1);
-INSERT INTO tblCATEGORY VALUES ('TO',N'Toy',1);
 
-INSERT INTO tblBELONG_CATEGORY VALUES ('123a','DT');
+INSERT INTO tblCATEGORY VALUES ('EL',N'Electronics',0);
+INSERT INTO tblCATEGORY VALUES ('FA',N'Fashion',0);
+INSERT INTO tblCATEGORY VALUES ('BO',N'Book',0);
+INSERT INTO tblCATEGORY VALUES ('FO',N'FOOD',0);
+INSERT INTO tblCATEGORY VALUES ('ST',N'Stationery',0);
+INSERT INTO tblCATEGORY VALUES ('TO',N'Toy',0);
+
+INSERT INTO tblBELONG_CATEGORY VALUES ('8865872832669','EL');
+INSERT INTO tblBELONG_CATEGORY VALUES ('4424616287949','EL');
 go
 
 ALTER TABLE tblCART
@@ -217,3 +226,80 @@ go
 b. Chứa câu lệnh truy vấn dữ liệu, lấy dữ liệu từ câu truy vấn để kiểm tra tính toán
 c. Có tham số đầu vào và kiểm tra tham số đầu vào
 Mỗi thành viên viết 2 câu SELECT để minh họa việc gọi hàm trong câu SELECT */
+CREATE FUNCTION ufnsum
+(
+	@first_name		NVARCHAR(20),
+	@last_name		NVARCHAR(20)
+)
+RETURNS int
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @ResultVar	int
+	declare @id_cus	varchar(50)
+	select @id_cus = id_customer from tblCustomer 
+	where first_name=@first_name and last_name=@last_name;
+
+	Select @ResultVar = count(*)
+	from 	(tblADD_CART INNER JOIN tblProduct
+	ON	tblADD_CART.idproduct=tblProduct.id) INNER JOIN tblCART 
+	on	tblADD_CART.idcart=tblCART.id
+	where	tblCART.idclient=@id_cus;
+	
+	-- Return the result of the function
+	RETURN @ResultVar
+END
+GO
+
+select dbo.ufnsum('ly','tran') as TotalProductinCart;
+go
+-- Function FavoriteShop--
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+create FUNCTION ufnFavoriteShop 
+(
+	
+	@first_name		NVARCHAR(20),
+	@last_name		NVARCHAR(20))
+RETURNS 	@re  TABLE 
+(	
+			[Name_Most_FavoriteShop] VARCHAR(50) primary key NOT NULL,
+			[Quantity_of_Pro] int NOT NULL 		
+)
+
+AS
+BEGIN
+	-- Fill the table variable with the rows for your result set
+			if @first_name is null or @last_name is null
+			begin
+				insert @re 
+				select  [Name_Most_FavoriteShop] =' 0', [Quantity_of_Pro]=0 
+			end	
+			else
+			begin
+			insert @re 
+			select top 1 name, count(idproduct) as count
+			from	(tblADD_CART inner join tblShop 
+			on tblADD_CART.idshop = tblShop.id) 
+			inner join tblCART
+			on tblADD_CART.idcart=tblCART.id
+			where tblCART.idclient IN (
+			select id_customer from tblCustomer 
+			where first_name=@first_name	and		
+			last_name=@last_name	
+			)
+			group by idshop,name
+			order by count desc
+			end
+-- Return the recordsets
+	RETURN 
+END;
+GO
+select *from ufnFavoriteShop('b','a')
