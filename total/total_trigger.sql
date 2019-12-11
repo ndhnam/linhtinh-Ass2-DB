@@ -2,7 +2,8 @@
 go
 -----TRIGGEER------
 ------NGÔ THANH LIÊM------
-	--KTRA SO LUONG 
+	--KTRA SO LUONG \
+
 CREATE TRIGGER check_amount_of_promotion ON tblPromotion FOR INSERT AS
 BEGIN
 	DECLARE @amountOfPromotion INT
@@ -15,6 +16,16 @@ BEGIN
 END
 go
 drop trigger check_amount_of_promotion
+<<<<<<< HEAD
+<<<<<<< HEAD
+go
+=======
+<<<<<<< HEAD
+exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'ch??ng trình khuy?n mãi t?t 2020',500000,'?? gia d?ng',150000,10,200000,'ch0001'
+=======
+>>>>>>> 12edffaf007d53022910e529222b94f437e4c143
+=======
+>>>>>>> 515323be6b987f7e10ce93f502a81104284cd58e
 exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuyễn mãi tết 2020',500000,'đồ gia dụng',150000,10,200000,'ch0001'
 
 
@@ -32,12 +43,17 @@ exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuy�
 		WHERE tblPromotion.id = @promotionCode
 	END
  END
+ 
  go
+
  drop trigger update_amount_of_Promotion
  exec insertOrder 'MDH014','Chuyển khoản','2019-12-01','2019-12-05','Đã giao','GRAB',23000,'','BLACK'
 select * from tblPromotion
 select * from tblOrder
 select * from tblTransportation
+<<<<<<< HEAD
+go
+=======
 
 --- Phần của Linh - 1710165 ---
 GO
@@ -79,6 +95,9 @@ BEGIN
 		PRINT 'SUCCESS'
 END
 GO
+<<<<<<< HEAD
+>>>>>>> 12edffaf007d53022910e529222b94f437e4c143
+=======
 
 --- phần của Nam ---
 create trigger check_amount_sell on tblSell for insert as
@@ -121,3 +140,4 @@ begin
 	join inserted on tblSell.idProduct = inserted.idProduct and tblSell.idShop = inserted.idShop
 end
 GO
+>>>>>>> 515323be6b987f7e10ce93f502a81104284cd58e

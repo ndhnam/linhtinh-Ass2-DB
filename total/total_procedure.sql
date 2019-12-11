@@ -457,3 +457,62 @@ begin
 		end
 	end
 end
+
+---- phần của tâm ----
+CREATE PROC usp_insert_cate
+	@id				char(3),
+	@name			nvarchar(30),
+	@quantity		int	
+As	begin  
+--declare set 
+			begin try 
+		insert into tblCATEGORY(id, name, quantity) values (@id, @name, @quantity)
+		print 'Insert product successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert category
+Category was already exist'
+		return 0
+			end catch
+	end
+Go
+CREATE prOC usp_List_Cart		-- Link 4 relation: cart, product, addcart, customer
+	@first_name		NVARCHAR(20),
+	@last_name		NVARCHAR(20)
+	as
+	begin
+	declare @id_cus	varchar(50)
+	select @id_cus = id_customer from tblCustomer 
+	where first_name=@first_name and last_name=@last_name;
+	Select idproduct,name as name_pro,	idshop,	quantity
+	from 	(tblADD_CART INNER JOIN tblProduct
+	ON	tblADD_CART.idproduct=tblProduct.id) INNER JOIN tblCART 
+	on	tblADD_CART.idcart=tblCART.id
+	where	tblCART.idclient=@id_cus
+	order by quantity ASC;	
+	--Select id_customer from tblCustomer 
+
+	end
+go
+CREATE PROCEDURE usp_Pro_MulFunction
+	-- Add the parameters for the stored procedure here
+	@name_pro nvarchar(100)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+    -- Insert statements for procedure here
+	select idcate, name 
+	from tblBELONG_CATEGORY inner join
+			tblCATEGORY on idcate=id
+	where idproduct IN (SELECT idproduct 
+	FROM tblBELONG_CATEGORY
+	Group by idproduct
+	Having count(idcate) > 1)
+	and idproduct IN (select id from tblProduct 
+						where name=@name_pro)
+END
+GO

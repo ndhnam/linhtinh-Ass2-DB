@@ -176,22 +176,6 @@ begin
 end		
 
 go
-create function totalMoneyFromHas
-(
-	@idOrder Varchar(50)
-)
-returns int
-as
-begin
-	declare @totalMoney int
-	set @totalMoney = (select sum(money) as totalMoney
-	from (select (unitPrice*amount) as money
-		from tblHas
-		where tblHas.idOrder = @idOrder) as totalMoneend)
-	return @totalMoney
-end
-go
-
 
 go
 create function totalOrderFromShop

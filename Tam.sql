@@ -254,3 +254,52 @@ GO
 select dbo.ufnsum('ly','tran') as TotalProductinCart;
 go
 -- Function FavoriteShop--
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+create FUNCTION ufnFavoriteShop 
+(
+	
+	@first_name		NVARCHAR(20),
+	@last_name		NVARCHAR(20))
+RETURNS 	@re  TABLE 
+(	
+			[Name_Most_FavoriteShop] VARCHAR(50) primary key NOT NULL,
+			[Quantity_of_Pro] int NOT NULL 		
+)
+
+AS
+BEGIN
+	-- Fill the table variable with the rows for your result set
+			if @first_name is null or @last_name is null
+			begin
+				insert @re 
+				select  [Name_Most_FavoriteShop] =' 0', [Quantity_of_Pro]=0 
+			end	
+			else
+			begin
+			insert @re 
+			select top 1 name, count(idproduct) as count
+			from	(tblADD_CART inner join tblShop 
+			on tblADD_CART.idshop = tblShop.id) 
+			inner join tblCART
+			on tblADD_CART.idcart=tblCART.id
+			where tblCART.idclient IN (
+			select id_customer from tblCustomer 
+			where first_name=@first_name	and		
+			last_name=@last_name	
+			)
+			group by idshop,name
+			order by count desc
+			end
+-- Return the recordsets
+	RETURN 
+END;
+GO
+select *from ufnFavoriteShop('b','a')

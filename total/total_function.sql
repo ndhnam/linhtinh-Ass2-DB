@@ -1,7 +1,7 @@
 ﻿-- Ngô Thanh Liêm - 1711929
 USE dbTipee
 Go
-
+-------Nam------
 create function totalMoneyFromHas
 (
 	@idOrder Varchar(50)
@@ -17,8 +17,11 @@ begin
 	return @totalMoney
 end
 go
-exec totalMoneyFromHas('MDH001')
 
+select dbo.totalMoneyFromHas('MDH001')
+
+go
+----------Li�m-----------
 CREATE FUNCTION totalMoneyByDepreciate
 (
 	@idOrder VARCHAR(50)
@@ -26,10 +29,10 @@ CREATE FUNCTION totalMoneyByDepreciate
 returns float
 BEGIN
 	declare @sum int
-	set @sum = totalMoneyFromHas(@idOrder)
+	set @sum = dbo.totalMoneyFromHas(@idOrder)
 	if(@sum >= (select minTotal from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
 	begin
-		set @sum = ((totalMoneyFromHas(@idOrder)+(select costLevel From tblTransportation join tblOrder on tblTransportation.id = tblOrder.transportCode))-(select depreciate from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
+		set @sum = ((dbo.totalMoneyFromHas(@idOrder)+(select costLevel From tblTransportation join tblOrder on tblTransportation.id = tblOrder.transportCode))-(select depreciate from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
 	end
 	return @sum
 END
@@ -223,4 +226,33 @@ begin
 end
 
 -- ham sort san pham theo ten hoac theo gia
+go
+
+--- PHẦN CỦA TÂM ---
+CREATE FUNCTION ufnsum
+(
+	@first_name		NVARCHAR(20),
+	@last_name		NVARCHAR(20)
+)
+RETURNS int
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @ResultVar	int
+	declare @id_cus	varchar(50)
+	select @id_cus = id_customer from tblCustomer 
+	where first_name=@first_name and last_name=@last_name;
+
+	Select @ResultVar = count(*)
+	from 	(tblADD_CART INNER JOIN tblProduct
+	ON	tblADD_CART.idproduct=tblProduct.id) INNER JOIN tblCART 
+	on	tblADD_CART.idcart=tblCART.id
+	where	tblCART.idclient=@id_cus;
+	
+	-- Return the result of the function
+	RETURN @ResultVar
+END
+GO
+
+select dbo.ufnsum('ly','tran') as TotalProductinCart;
 go
