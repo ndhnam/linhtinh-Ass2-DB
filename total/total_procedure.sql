@@ -579,7 +579,6 @@ GO
 -- phần của ly --
 ------------------ PROCEDURE ------------------
 
--- Find all customers in one city and sort by ID
 GO 
 CREATE PROCEDURE updateTelNum
 	@tel_num varchar(11), 
@@ -589,6 +588,9 @@ BEGIN
 	UPDATE dbo.tblTelephoneNumber SET tel_number = @tel_num
 	WHERE id_customer = @id_customer
 END
+
+
+--Tìm tất cả khách hàng ở cùng một tỉnh nào đó
 GO
 CREATE PROCEDURE queryCustomersInOneProvince
 	@province nvarchar(100)
