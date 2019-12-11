@@ -516,3 +516,38 @@ BEGIN
 						where name=@name_pro)
 END
 GO
+-- phần của ly --
+------------------ PROCEDURE ------------------
+
+-- Find all customers in one city and sort by ID
+GO 
+CREATE PROCEDURE queryCustomersInOneProvince
+	@province nvarchar(100)
+AS
+BEGIN
+	SELECT tblCustomer.id_customer, first_name, tel_number
+	FROM tblAddress, tblCustomer, tblTelephoneNumber
+	WHERE province = @province 
+		AND tblAddress.id_customer = tblCustomer.id_customer 
+		AND tblAddress.id_customer = tblTelephoneNumber.id_customer
+	ORDER BY tblCustomer.id_customer
+END
+
+EXEC queryCustomersInOneProvince 'An Giang' 
+EXEC queryCustomersInOneProvince 'Hồ Chí Minh'
+EXEC queryCustomersInOneProvince 'Hà Nội'
+
+-- Tìm tất cả các đơn hàng của một khách hàng trước một thời gian nào đó mà đang được xử lý
+GO 
+CREATE PROCEDURE queryBillsBeforeOneDate
+	@date			DATE,
+	@id_customer	VARCHAR(6)
+AS
+BEGIN
+		SELECT id_bill, time_ordering
+		FROM tblOrdering, tblOrder
+        WHERE  id_customer = @id_customer AND DATEDIFF(DAY, @date, time_ordering) > 0 
+        GROUP BY time_ordering, orderStatus, id_bill
+		HAVING orderStatus = 'Đang xử lý'
+		ORDER BY time_ordering
+END 

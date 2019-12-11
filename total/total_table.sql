@@ -216,38 +216,87 @@ GO
 -- Phần của Ly --
 CREATE TABLE tblCustomer 
 (
-	id_customer VARCHAR(6) PRIMARY KEY,
-	last_name NVARCHAR(20), 
-	first_name NVARCHAR(20),
-	email VARCHAR(100) NOT NULL,
-	sex BIT,
-	date_of_birth DATE,
-	id_intro VARCHAR(50),
-	id_reduce VARCHAR(50)
+	id_customer		VARCHAR(6)		PRIMARY KEY,
+	last_name		NVARCHAR(20)	NOT NULL,
+	first_name		NVARCHAR(20)	NOT NULL,
+	email			VARCHAR(100)	NOT NULL,
+	sex				BIT				NOT NULL, -- 0: Female, 1: Male
+	date_of_birth	DATE			NOT NULL,
+	id_intro		VARCHAR(6),
+	num_of_bills	INT DEFAULT 0
 );
 
+-- Table Intro
+CREATE TABLE tblIntro
+(
+	id_intro	VARCHAR(6),
+	id_reduce	VARCHAR(50)
+)
+
+-- Table Telephone
 CREATE TABLE tblTelephoneNumber
 (
-	tel_number VARCHAR(11),
-	id_customer VARCHAR(50),
+	tel_number	VARCHAR(11),
+	id_customer	VARCHAR(6),
 	PRIMARY KEY(tel_number, id_customer)
 ); 
+
+-- Table Address
+CREATE TABLE tblAddress 
+(
+	stt				INT, 
+	id_customer		VARCHAR(6),
+	province		NVARCHAR(100),
+	city			NVARCHAR(100),
+	ward			NVARCHAR(100),
+	detail			NTEXT,
+	type_address	NVARCHAR(30),
+	PRIMARY KEY(stt, id_customer)
+);
+
+-- Table Bill
+CREATE TABLE tblOrder
+(
+	id				VARCHAR(6)	PRIMARY KEY,
+	methodOfPayment Nchar(50)	NOT NULL,
+	bookingTime		Date		NOT NULL,
+	deliveryTime	Date		NOT NULL,
+	orderStatus		Nchar(50)	NOT NULL,
+	transportCode	Char(50)	NOT NULL,
+	transportCost	Int			NOT NULL,
+	idCustomer		VARCHAR(6)	NOT NULL,
+	promotionCode	Char(50)	NOT NULL
+);
+
+-- Table Order
+CREATE TABLE tblOrdering
+(
+	id_bill			VARCHAR(6) PRIMARY KEY,
+	id_customer		VARCHAR(6),
+	time_ordering	DATE
+)
+
+ALTER TABLE tblOrdering
+ADD CONSTRAINT FK_OrderOdering
+FOREIGN KEY(id_bill) REFERENCES tblOrder(id);
+
+ALTER TABLE tblCustomer
+ADD CONSTRAINT FK_Customer
+FOREIGN KEY(id_intro) REFERENCES tblCustomer(id_customer);
+
 ALTER TABLE tblTelephoneNumber 
 ADD CONSTRAINT FK_CustomerTelephoneNumber
 FOREIGN KEY(id_customer) REFERENCES tblCustomer(id_customer);
 
-CREATE TABLE tblAdrress 
-(
-	addr NVARCHAR(100), 
-	id_customer VARCHAR(50),
-	province NVARCHAR(100),
-	city NVARCHAR(100),
-	ward NVARCHAR(100),
-	detail NTEXT,
-	type_address VARCHAR(10),
-	PRIMARY KEY(addr, id_customer)
-);
 ALTER TABLE tblAdrress
 ADD CONSTRAINT FK_Customer_Address
 FOREIGN KEY(id_customer) REFERENCES tblCustomer(id_customer);
-GO
+
+ALTER TABLE tblOrdering 
+ADD CONSTRAINT FK_CustomerOrdering
+FOREIGN KEY(id_customer) REFERENCES tblCustomer(id_customer);
+
+ALTER TABLE tblIntro
+ADD CONSTRAINT FK_IntroCustomer
+FOREIGN KEY(id_intro) REFERENCES tblCustomer(id_customer)
+ON DELETE CASCADE
