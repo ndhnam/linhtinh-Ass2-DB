@@ -170,3 +170,290 @@ BEGIN
 		END
 END
 GO
+
+--- PHẦN CỦA NAM ---
+go
+create procedure queryProductFromShop
+	@idShop VARCHAR(50)
+as
+begin
+	begin try
+		print 'print id - name product shop sell'
+		select idProduct, name, size, img, color, detail, amount, unitPrice
+		from tblSell, tblProduct
+		where tblSell.idShop = @idShop and tblProduct.id = tblSell.idProduct
+		order by idProduct
+	end try
+	begin catch
+		print 'Error query ProductFromShop'
+	end catch
+end
+
+go
+create procedure insertProduct
+	@id VARCHAR(50),
+	@name NVARCHAR(100),
+	@size CHAR(50),
+	@img text,
+	@color NVARCHAR(100),
+	@detail text
+AS
+BEGIN
+	begin try 
+		insert into tblProduct(id, name, size, img, color, detail) values (@id, @name, @size, @img, @color, @detail)
+		print 'Insert product successfully'
+		return @@ROWCOUNT
+	end try
+	begin catch
+		print 'Error insert product
+Product was already exist+ACE-'
+		return 0
+	end catch
+END
+
+
+go
+create procedure insertSell
+	@idShop VARCHAR(50),
+	@idProduct varchar(50),
+	@amount int,
+	@unitPrice int	
+as
+begin
+	begin try 
+		insert into tblSell(idShop, idProduct, amount, unitPrice) values (@idShop, @idProduct, @amount, @unitPrice)
+		print 'Insert sell successfully'
+		return @@ROWCOUNT
+	end try
+	begin catch
+		print 'Error insert sell'
+		return 0
+	end catch
+end
+
+go
+create procedure updateSell
+	@idShop VARCHAR(50),
+	@idProduct varchar(50),
+	@amount int,
+	@unitPrice int
+as
+begin
+	begin try
+		update tblSell
+		set amount = @amount, unitPrice = @unitPrice
+		where idShop = @idShop and idProduct = @idProduct
+	end try
+	begin catch
+		print 'Error update product
+Product does not exist'
+	end catch
+end
+
+
+go
+create procedure insertHas
+	@idOrder VARCHAR(50),
+	@idShop VARCHAR(50),
+	@idProduct varchar(50),
+	@unitPrice int,
+	@amount int
+as
+begin
+	begin try
+		insert into tblHas(idOrder, idShop, idProduct, unitPrice, amount) values (@idOrder, @idShop, @idProduct, @unitPrice, @amount)
+		print 'Insert has successfully'
+		return @@ROWCOUNT
+	end try
+	begin catch
+		print 'Error insert has'
+		return 0
+	end catch
+end
+
+go
+create procedure queryProductFromShop
+	@idShop VARCHAR(50)
+as
+begin
+	begin try
+		print 'print id - name product shop sell'
+		select idProduct, name, size, img, color, detail, amount, unitPrice
+		from tblSell, tblProduct
+		where tblSell.idShop = @idShop and tblProduct.id = tblSell.idProduct
+		order by idProduct
+	end try
+	begin catch
+		print 'Error query ProductFromShop'
+	end catch
+end
+
+go
+create procedure queryMoneyFromHas
+	@idOrder VARCHAR(50)
+as
+begin
+	begin try
+		print 'query money from has'
+		select idProduct, name, unitPrice, amount, (unitPrice*amount) as money
+		from tblHas, tblProduct
+		where tblHas.idOrder = @idOrder and tblHas.idProduct = tblProduct.id
+		order by idProduct
+	end try
+	begin catch
+		print 'Error query money from has'
+	end catch
+end
+
+go
+create procedure queryTotalMoney
+	@idOrder VARCHAR(50)
+as
+begin
+	begin try
+		print 'query total money from has'	
+		select sum(money) as total_money
+		from (select (unitPrice*amount) as money
+			from tblHas
+			where tblHas.idOrder = @idOrder) as totalMoney
+	end try
+	begin catch
+		print 'Error query total money from has'
+	end catch
+end		
+
+go
+create procedure findProductByNameOrID
+	@stringFind NVARCHAR(100)
+as
+begin
+	if len(@stringFind) >= 5
+	begin
+		declare @leftString NVARChar(5)
+		declare @rightString NVARCHAR(5)
+		declare @subString NVARCHAR(5)
+		set @leftString = left(@stringFind, 5)
+		set @rightString = RIGHT(@stringFind, 5)
+		set @subString = SUBSTRING(@stringFind, len(@stringFind)/2 - 2, 5)
+		select *
+		from tblProduct, tblSell
+		where (id like '%' + @leftString + '%' 
+		or id like '%' + @rightString + '%' 
+		or id like '%' + @subString + '%'
+		or name like '%' + @leftString + '%'
+		or name like '%' + @rightString + '%' 
+		or name like '%' + @subString + '%'
+		or detail like '%' + @stringFind + '%')
+		and id = idProduct
+		order by name
+	end
+	else
+	begin
+		select *
+		from tblProduct, tblSell
+		where (id like '%' + @stringFind + '%' 
+		or id like '%' + @stringFind + '%' 
+		or id like '%' + @stringFind + '%'
+		or name like '%' + @stringFind + '%'
+		or name like '%' + @stringFind + '%' 
+		or name like '%' + @stringFind + '%'
+		or detail like '%' + @stringFind + '%')
+		and id = idProduct
+		order by name
+	end
+end
+
+--drop proc findProductByNameOrID
+
+go
+create procedure sortProductByName
+	@isIncrease bit
+as
+begin
+	if @isIncrease = 1
+	begin
+		select *
+		from tblProduct, tblSell
+		where id = idProduct
+		order by name
+	end
+	else
+	begin
+		select *
+		from tblProduct, tblSell
+		where id = idProduct
+		order by name desc
+	end
+end
+
+go
+create procedure sortProductByMoney
+	@isIncrease bit
+as
+begin
+	if @isIncrease = 1
+	begin
+		select *
+		from tblProduct, tblSell
+		where id = idProduct
+		order by unitPrice
+	end
+	else
+	begin
+		select *
+		from tblProduct, tblSell
+		where id = idProduct
+		order by unitPrice desc
+	end
+end
+
+
+go
+create procedure sortProduct
+	@stringFind NVARCHAR(100),
+	@isName int, -- if 0 khong sort, if 1 sort theo ten, if 2 sort theo gia, if 3 sort theo ten va gia, if 4 sort theo gia va ten
+	@isIncrease bit 
+as
+begin
+	if @isName = 0
+	begin 
+		select * from findProduct(@stringFind) where id = idProduct
+	end
+	else if @isName = 1
+	begin
+		select * from findProduct(@stringFind) where id = idProduct order by name
+	end
+	else if @isName = 2
+	begin
+		if @isIncrease = 1
+		begin
+			select * from findProduct(@stringFind) where id = idProduct order by unitPrice
+		end
+		else
+		begin
+			select * from findProduct(@stringFind) where id = idProduct order by unitPrice desc
+		end
+	end
+	else if @isName = 3
+	begin
+		if @isIncrease = 1
+		begin
+			select * from findProduct(@stringFind) where id = idProduct order by name, unitPrice
+		end
+		else
+		begin
+			select * from findProduct(@stringFind) where id = idProduct order by name, unitPrice desc
+		end
+	end
+	else if @isName = 4
+	begin
+		if @isIncrease = 1
+		begin
+			select * from findProduct(@stringFind) where id = idProduct order by unitPrice, name
+		end
+		else
+		begin
+			select * from findProduct(@stringFind) where id = idProduct order by unitPrice desc, name
+		end
+	end
+end
