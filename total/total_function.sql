@@ -264,6 +264,56 @@ begin
 	return
 end
 
+go
+create function Product()
+	returns @tempTable table
+	(id VARCHAR(50),
+	name NVARCHAR(100) not null,
+	size CHAR(50),
+	img text,
+	color NVARCHAR(100),
+	detail text,
+	idShop VARCHAR(50) not null,
+	amount int not null,
+	unitPrice int not null)
+as
+begin
+	insert into @tempTable
+		select idProduct, name, size, img, color, detail, idShop, amount ,unitPrice
+		from tblSell, tblProduct
+		Where id = idProduct
+		order by idProduct
+		return
+end
+
+go
+select * from Product()
+
+go
+create function ProductSortedPrice()
+	returns @tempTable table
+	(id VARCHAR(50),
+	name NVARCHAR(100) not null,
+	size CHAR(50),
+	img text,
+	color NVARCHAR(100),
+	detail text,
+	idShop VARCHAR(50) not null,
+	amount int not null,
+	unitPrice int not null)
+as
+begin
+	insert into @tempTable
+	select idProduct, name, size, img, color, detail, idShop, amount ,unitPrice
+	from tblSell, tblProduct
+	Where id = idProduct
+	order by amount
+	return
+end
+
+go
+select * from ProductSortedPrice() order by unitPrice
+
 -- ham sort san pham theo ten hoac theo gia
 go
 

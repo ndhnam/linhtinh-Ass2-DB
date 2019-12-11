@@ -10,7 +10,7 @@
    // $sql='SELECT * FROM USERS';
    // $query=sqlsrv_query($conn,$sql);
     // $sql_sp='SELECT * FROM tblProduct';
-    $sql_sp='select * from Product()';
+    $sql_sp='select * from ProductSortedPrice() order by unitPrice';
     $query_sp=sqlsrv_query($conn,$sql_sp);
    ?> 
         <meta charset="utf-8">
