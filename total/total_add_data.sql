@@ -1,6 +1,84 @@
 ﻿-- Ngô Thanh Liêm - 1711929
 USE dbTipee
 Go
+-------------LINH----------------
+
+CREATE PROCEDURE insertShopAccount
+	@id VARCHAR(6),
+	@username VARCHAR(32),
+	@password VARCHAR(50),
+	@name NCHAR(50),
+	@number INT,
+	@address NCHAR(100),
+	@email VARCHAR(50),
+	@avatar VARCHAR(100),
+	@classify INT,
+	@typesOfShop NCHAR(30),
+	@distribution NCHAR(10)
+AS
+BEGIN
+	DECLARE @hashPass VARBINARY(500) = HASHBYTES('SHA2_512', @password)
+	DECLARE @afterHashPassword VARCHAR(500) = CONVERT(VARCHAR(500), @hashPass)
+	DECLARE @count_id INT = (SELECT COUNT(id) FROM dbo.tblAccount WHERE id = @id)
+	DECLARE @count_user INT = (SELECT COUNT(username) FROM dbo.tblAccount WHERE username = @username)
+	IF @count_id = 0 AND @count_user = 0
+	BEGIN
+		INSERT INTO dbo.tblAccount(id, username, password) VALUES (@id, @username, @afterHashPassword)d
+		IF @@ROWCOUNT > 0
+		BEGIN
+			INSERT INTO dbo.tblShop(id, name, number, address, email, avatar, classify, typesOfShop, distribution, total_rate) VALUES (@id, @name, @number, @address, @email, @avatar, @classify, @typesOfShop, @distribution, 0)
+		END
+	END
+END
+go
+EXEC dbo.insertShopAccount 'CH0001', 'ch01', 'ch01', 'SHOP A', 111111111, N'7A/19 Thành Thái, Phường 14, Quận 10, Hồ Chí Minh, Việt Nam', 'email1@gmail.com', N'link', '1', N'THIẾT BỊ', N'Sỉ';
+EXEC dbo.insertShopAccount 'CH0002', 'ch02', 'ch02', 'SHOP B', 999999999, N'Số 30 Đường Số 52, Lữ Gia, Phường 15, Quận 11, Hồ Chí Minh 72621, Việt Nam', 'email2@gmail.com', N'link', '0', N'THỜI TRANG', N'Lẻ';
+EXEC dbo.insertShopAccount 'CH0003', 'ch03', 'ch03', 'SHOP C', 333333333, N'270B Lý Thường Kiệt, Phường 14, Quận 10, Hồ Chí Minh, Việt Nam', 'email3@gmail.com', N'link', '1', N'GIA DỤNG', N'Sỉ, lẻ';
+EXEC dbo.insertShopAccount 'CH0004', 'ch04', 'ch04', 'SHOP D', 222222222, N'73 Đường Mai Thị Lựu, Đa Kao, Quận 1, Hồ Chí Minh 700000, Việt Nam', 'email4@gmail.com', N'link', '0', N'THỜI TRANG', N'Sỉ';
+EXEC dbo.insertShopAccount 'CH0005', 'ch05', 'ch05', 'SHOP E', 555555555, N'282/20 Đường Bùi Hữu Nghĩa, Phường 2, Bình Thạnh, Hồ Chí Minh, Việt Nam', 'email5@gmail.com', N'link', '1', N'ĐỒNG HỒ', N'Lẻ';
+EXEC dbo.insertShopAccount 'CH0006', 'ch06', 'ch06', 'SHOP F', 666666666, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email6@gmail.com', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
+EXEC dbo.insertShopAccount 'CH0007', 'ch07', 'ch07', 'SHOP G', 666666666, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email7', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
+EXEC dbo.insertShopAccount 'CH0008', 'ch08', 'ch08', 'SHOP H', 666666666, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email8@gmail.com', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
+EXEC dbo.insertShopAccount 'CH0009', 'ch09', 'ch09', 'SHOP I', 123453234, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email9', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
+go
+
+CREATE PROCEDURE writeReviewShop
+	@idShop VARCHAR(6),
+	@idCustomer VARCHAR(6),
+	@star INT,
+	@describe NCHAR(100)
+AS
+BEGIN
+	IF @describe = ''
+		PRINT 'Write comment'
+	ELSE 
+		BEGIN
+			DECLARE @countRate AS INT
+			SET @countRate = (SELECT COUNT(idShop) FROM dbo.tblRate WHERE idCustomer = @idCustomer AND idShop = @idShop)
+			IF	@countRate = 0
+				BEGIN
+					INSERT INTO dbo.tblRate(idShop, idCustomer, star, describe) 
+					VALUES (@idShop, @idCustomer, @star, @describe)
+					PRINT 'Success'
+				END
+			ELSE
+				BEGIN 
+					UPDATE dbo.tblRate 
+					SET star = @star, describe = @describe
+					WHERE idShop = @idShop AND idCustomer = @idCustomer
+					PRINT 'Success'
+				END
+		END
+END
+go
+EXEC writeReviewShop 'CH0001', 'KH0001', 5, N'Đẹp';
+EXEC writeReviewShop 'CH0001', 'KH0002', 4, N'Đẹp';
+EXEC writeReviewShop 'CH0001', 'KH0003', 5, N'Hàng tốt đó!';
+EXEC writeReviewShop 'CH0001', 'KH0004', 3, N'Tạm được!';
+EXEC writeReviewShop 'CH0002', 'KH0001', 3, N'Tạm được!';
+EXEC writeReviewShop 'CH0002', 'KH0004', 2, N'Tạm được!';
+EXEC writeReviewShop 'CH0001', 'KH0005', 5, N'OK đấy!';
+
 ---- Ngô Thanh Liêm - 1711929-----
 CREATE PROCEDURE insertPromotion 
 	@id					Varchar(60),
@@ -94,6 +172,9 @@ exec insertOrder 'MDH004','Trực tiếp','2019-12-09','2019-12-16','Đang giao'
 exec insertOrder 'MDH005','Trực tiếp','2019-11-19','2019-11-21','Đã giao','ALOGN',15000,'','FREESHIP'
 go
 
+<<<<<<< HEAD
+
+=======
 CREATE TRIGGER check_amount_of_promotion ON tblPromotion FOR INSERT AS
 BEGIN
 	DECLARE @amountOfPromotion INT
@@ -128,6 +209,9 @@ EXEC writeReviewShop 'CH0002', 'kh01', 'kh01', 2, N'Tạm được!';
 EXEC writeReviewShop 'CH0001', 'kh05', 'kh05', 5, N'OK đấy!';
 EXEC deleteReviewShop 'CH0001','kh01','kh01';
 EXEC deleteReviewShop 'CH0001','kh02','kh02';
+<<<<<<< HEAD
+>>>>>>> 12edffaf007d53022910e529222b94f437e4c143
+=======
 
 --- phần của Nam ---
 
@@ -329,3 +413,4 @@ with result sets (
 		[Name Cate]	varchar(50)
 	)
 )
+>>>>>>> 515323be6b987f7e10ce93f502a81104284cd58e

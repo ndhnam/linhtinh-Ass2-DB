@@ -1,5 +1,4 @@
-﻿USE dbTipee
-GO
+﻿
 -- Phần của Linh --
 CREATE TABLE tblAccount
 (
