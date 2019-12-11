@@ -82,7 +82,7 @@ BEGIN
 		END
 END
 GO
-CREATE PROCEDURE insertCustomerAccount
+ALTER PROCEDURE insertCustomerAccount
 	@id_customer VARCHAR(6),
 	@username VARCHAR(32),
 	@password VARCHAR(50),
@@ -91,22 +91,37 @@ CREATE PROCEDURE insertCustomerAccount
 	@email VARCHAR(100),
 	@sex BIT,
 	@date_of_birth DATE,
-	@id_intro VARCHAR(15),
-	@id_reduce VARCHAR(15)
+	@tel_num VARCHAR(11),
+	@stt INT,
+	@province NVARCHAR(100),
+	@city NVARCHAR(100),
+	@ward NVARCHAR(100)
 AS
 BEGIN
 	DECLARE @hashPass VARBINARY(500) = HASHBYTES('SHA2_512', @password)
 	DECLARE @afterHashPassword VARCHAR(100) = CONVERT(VARCHAR(500), @hashPass)
 	DECLARE @count_id INT = (SELECT COUNT(id) FROM dbo.tblAccount WHERE id = @id_customer)
 	DECLARE @count_user INT = (SELECT COUNT(username) FROM dbo.tblAccount WHERE username = @username)
-	IF @count_id = 0 AND @count_user = 0
-	BEGIN
-		INSERT INTO dbo.tblAccount(id, username, password) VALUES (@id_customer, @username, @afterHashPassword)
-		IF @@ROWCOUNT > 0
+	IF @email not like '%@%'
 		BEGIN
-			INSERT INTO dbo.tblCustomer(id_customer, last_name, first_name, email, sex, date_of_birth, id_intro, id_reduce) VALUES (@id_customer, @last_name, @first_name, @email, @sex, @date_of_birth, @id_intro, @id_reduce)
+			RAISERROR (N'Email sai định dạng', 1, 1)
 		END
-	END
+	ELSE IF EXISTS(SELECT * from dbo.tblCustomer where @email  = email)
+		BEGIN
+			RAISERROR (N'Email này đã tồn tại!', 1, 1)
+        END
+	ELSE
+		IF @count_id = 0 AND @count_user = 0
+			BEGIN
+				INSERT INTO dbo.tblAccount(id, username, password) VALUES (@id_customer, @username, @afterHashPassword)
+				INSERT INTO dbo.tblCustomer(id_customer, last_name, first_name, email, sex, date_of_birth) VALUES (@id_customer, @last_name, @first_name, @email, @sex, @date_of_birth)
+				INSERT INTO dbo.tblTelephoneNumber VALUES (@tel_num, @id_customer)
+				INSERT INTO dbo.tblAddress VALUES(@stt,@id_customer,@province,@city,@ward,NULL,'')
+			END
+		ELSE
+			BEGIN
+				RAISERROR (N'Tên tài khoản hoặc ID đã tồn tại!', 1, 1)
+			END
 END
 GO
 CREATE PROCEDURE procedureChangePassword
@@ -504,7 +519,7 @@ begin
 end
 
 ---- phần của tâm ----
-CREATE PROC usp_insert_cate
+CREATE PROCEDURE usp_insert_cate
 	@id				char(3),
 	@name			nvarchar(30),
 	@quantity		int	
@@ -523,7 +538,7 @@ Category was already exist'
 			end catch
 	end
 Go
-CREATE prOC usp_List_Cart		-- Link 4 relation: cart, product, addcart, customer
+CREATE PROCEDURE usp_List_Cart		-- Link 4 relation: cart, product, addcart, customer
 	@first_name		NVARCHAR(20),
 	@last_name		NVARCHAR(20)
 	as
@@ -566,6 +581,15 @@ GO
 
 -- Find all customers in one city and sort by ID
 GO 
+CREATE PROCEDURE updateTelNum
+	@tel_num varchar(11), 
+	@id_customer VARCHAR(6)
+AS 
+BEGIN
+	UPDATE dbo.tblTelephoneNumber SET tel_number = @tel_num
+	WHERE id_customer = @id_customer
+END
+GO
 CREATE PROCEDURE queryCustomersInOneProvince
 	@province nvarchar(100)
 AS
@@ -578,9 +602,7 @@ BEGIN
 	ORDER BY tblCustomer.id_customer
 END
 
-EXEC queryCustomersInOneProvince 'An Giang' 
-EXEC queryCustomersInOneProvince 'Hồ Chí Minh'
-EXEC queryCustomersInOneProvince 'Hà Nội'
+
 
 -- Tìm tất cả các đơn hàng của một khách hàng trước một thời gian nào đó mà đang được xử lý
 GO 

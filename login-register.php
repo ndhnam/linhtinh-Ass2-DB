@@ -487,15 +487,15 @@ if( $conn == false)
                                     <div class="row">
                                         <div class="col-md-12 col-12 mb-20">
                                             <label>Tên tài khoản*</label>
-                                            <input name="username_shop" class="mb-0" type="text" placeholder="Username">
+                                            <input id="username_shop" name="username_shop" class="mb-0" type="text" placeholder="Username">
                                         </div>
                                         <div class="col-md-12 mb-20">
                                             <label>Mật khẩu*</label>
-                                            <input name="password_shop" class="mb-0" type="password" placeholder="Password">
+                                            <input id="password_shop" name="password_shop" class="mb-0" type="password" placeholder="Password">
                                         </div>
 										<div class="col-md-12 mb-20">
                                             <label>Nhập lại mật khẩu*</label>
-                                            <input class="mb-0" type="password" placeholder="Confirm Password">
+                                            <input id="cpassword_shop" class="mb-0" type="password" placeholder="Confirm Password">
                                         </div>
                                         <div class="col-md-12 mb-20">
                                             <label>Email Address*</label>

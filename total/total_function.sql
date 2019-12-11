@@ -16,11 +16,9 @@ begin
 		where tblHas.idOrder = @idOrder) as totalMoneend)
 	return @totalMoney
 end
-go
+GO
 
-select dbo.totalMoneyFromHas('MDH001')
 
-go
 ----------Li�m-----------
 CREATE FUNCTION totalMoneyByDepreciate
 (
@@ -129,7 +127,7 @@ SELECT * FROM dbo.[funcFindRate]('CH0001',5,1)
 GO
 
 --- phần của Nam ---
-create function totalMoneyFromHas
+ALTER function totalMoneyFromHas
 (
 	@idOrder Varchar(50)
 )

@@ -3,34 +3,6 @@ USE dbTipee
 Go
 -------------LINH----------------
 
-CREATE PROCEDURE insertShopAccount
-	@id VARCHAR(6),
-	@username VARCHAR(32),
-	@password VARCHAR(50),
-	@name NCHAR(50),
-	@number INT,
-	@address NCHAR(100),
-	@email VARCHAR(50),
-	@avatar VARCHAR(100),
-	@classify INT,
-	@typesOfShop NCHAR(30),
-	@distribution NCHAR(10)
-AS
-BEGIN
-	DECLARE @hashPass VARBINARY(500) = HASHBYTES('SHA2_512', @password)
-	DECLARE @afterHashPassword VARCHAR(500) = CONVERT(VARCHAR(500), @hashPass)
-	DECLARE @count_id INT = (SELECT COUNT(id) FROM dbo.tblAccount WHERE id = @id)
-	DECLARE @count_user INT = (SELECT COUNT(username) FROM dbo.tblAccount WHERE username = @username)
-	IF @count_id = 0 AND @count_user = 0
-	BEGIN
-		INSERT INTO dbo.tblAccount(id, username, password) VALUES (@id, @username, @afterHashPassword)d
-		IF @@ROWCOUNT > 0
-		BEGIN
-			INSERT INTO dbo.tblShop(id, name, number, address, email, avatar, classify, typesOfShop, distribution, total_rate) VALUES (@id, @name, @number, @address, @email, @avatar, @classify, @typesOfShop, @distribution, 0)
-		END
-	END
-END
-go
 EXEC dbo.insertShopAccount 'CH0001', 'ch01', 'ch01', 'SHOP A', 111111111, N'7A/19 Thành Thái, Phường 14, Quận 10, Hồ Chí Minh, Việt Nam', 'email1@gmail.com', N'link', '1', N'THIẾT BỊ', N'Sỉ';
 EXEC dbo.insertShopAccount 'CH0002', 'ch02', 'ch02', 'SHOP B', 999999999, N'Số 30 Đường Số 52, Lữ Gia, Phường 15, Quận 11, Hồ Chí Minh 72621, Việt Nam', 'email2@gmail.com', N'link', '0', N'THỜI TRANG', N'Lẻ';
 EXEC dbo.insertShopAccount 'CH0003', 'ch03', 'ch03', 'SHOP C', 333333333, N'270B Lý Thường Kiệt, Phường 14, Quận 10, Hồ Chí Minh, Việt Nam', 'email3@gmail.com', N'link', '1', N'GIA DỤNG', N'Sỉ, lẻ';
@@ -41,36 +13,9 @@ EXEC dbo.insertShopAccount 'CH0007', 'ch07', 'ch07', 'SHOP G', 666666666, N'10 �
 EXEC dbo.insertShopAccount 'CH0008', 'ch08', 'ch08', 'SHOP H', 666666666, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email8@gmail.com', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
 EXEC dbo.insertShopAccount 'CH0009', 'ch09', 'ch09', 'SHOP I', 123453234, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email9', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
 go
-
-CREATE PROCEDURE writeReviewShop
-	@idShop VARCHAR(6),
-	@idCustomer VARCHAR(6),
-	@star INT,
-	@describe NCHAR(100)
-AS
-BEGIN
-	IF @describe = ''
-		PRINT 'Write comment'
-	ELSE 
-		BEGIN
-			DECLARE @countRate AS INT
-			SET @countRate = (SELECT COUNT(idShop) FROM dbo.tblRate WHERE idCustomer = @idCustomer AND idShop = @idShop)
-			IF	@countRate = 0
-				BEGIN
-					INSERT INTO dbo.tblRate(idShop, idCustomer, star, describe) 
-					VALUES (@idShop, @idCustomer, @star, @describe)
-					PRINT 'Success'
-				END
-			ELSE
-				BEGIN 
-					UPDATE dbo.tblRate 
-					SET star = @star, describe = @describe
-					WHERE idShop = @idShop AND idCustomer = @idCustomer
-					PRINT 'Success'
-				END
-		END
-END
-go
+SELECT * FROM tblAccount
+SELECT * FROM tblShop
+GO
 EXEC writeReviewShop 'CH0001', 'KH0001', 5, N'Đẹp';
 EXEC writeReviewShop 'CH0001', 'KH0002', 4, N'Đẹp';
 EXEC writeReviewShop 'CH0001', 'KH0003', 5, N'Hàng tốt đó!';
@@ -194,18 +139,30 @@ EXEC dbo.insertShopAccount 'CH0006', 'ch06', 'ch06', 'SHOP F', 666666666, N'10 �
 EXEC dbo.insertShopAccount 'CH0007', 'ch07', 'ch07', 'SHOP G', 666666666, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email7', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
 EXEC dbo.insertShopAccount 'CH0008', 'ch08', 'ch08', 'SHOP H', 666666666, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email8@gmail.com', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
 EXEC dbo.insertShopAccount 'CH0009', 'ch09', 'ch09', 'SHOP I', 123453234, N'10 Đường Mai Chí Thọ, An Lợi Đông, Quận 2, Hồ Chí Minh 700000, Việt Nam', 'email9', N'link', '0', N'THỂ THAO', N'Sỉ, lẻ';
-EXEC insertCustomerAccount 'KH0001','kh01','kh01',N'Uzumaki',N'Naruto','naruto@gmail.com',0,'19991010','','';
-EXEC insertCustomerAccount 'KH0002','kh02','kh02',N'Uchiha',N'Sasuke','sasuke@gmail.com',0,'19991010','','';
-EXEC insertCustomerAccount 'KH0003','kh03','kh03',N'Nara',N'Shikamaru','shikamaru@gmail.com',0,'19991010','','';
-EXEC writeReviewShop 'CH0001', 'kh01', 'kh01', 5, N'Đẹp';
+
+EXEC insertCustomerAccount 'KH0006','kh06','kh06','Nguyen', 'Ly','truclybk.cs@gmail.com', 0,'19990218';
+EXEC insertCustomerAccount 'KH0002','kh02','kh02','Nguyen', 'Nam', 'namnguyen@gmail.com', 0, '19981230';
+EXEC insertCustomerAccount 'KH0003','kh03','kh03','Huynh', 'Linh', 'hpplinh@gmail.com', 1, '19970101';
+EXEC insertCustomerAccount 'KH0004','kh04','kh04','Tran', 'Tam', 'tvtam@hcmut.edu.vn', 1, '20000518';
+EXEC insertCustomerAccount 'KH0005','kh05','kh05','Ngo', 'Liem', 'ntliem@hcmut.edu.vn', 1, '20011108';
+
+select * from tblAccount
+select * from tblCustomer
+EXEC writeReviewShop 'CH0001', 'kh06', 'kh06', 5, N'Đẹp';
 EXEC writeReviewShop 'CH0001', 'kh02', 'kh02', 4, N'Đẹp';
 EXEC writeReviewShop 'CH0001', 'kh03', 'kh03', 5, N'Hàng tốt đó!';
 EXEC writeReviewShop 'CH0001', 'kh04', 'kh04', 3, N'Tạm được!';
-EXEC writeReviewShop 'CH0002', 'kh01', 'kh01', 3, N'Tạm được!';
-EXEC writeReviewShop 'CH0002', 'kh01', 'kh01', 2, N'Tạm được!';
+EXEC writeReviewShop 'CH0002', 'kh06', 'kh06', 3, N'Tạm được!';
+EXEC writeReviewShop 'CH0002', 'kh02', 'kh02', 2, N'Tạm được!';
 EXEC writeReviewShop 'CH0001', 'kh05', 'kh05', 5, N'OK đấy!';
-EXEC deleteReviewShop 'CH0001','kh01','kh01';
+
+select * from tblShop
+select * from tblRate
+
+EXEC deleteReviewShop 'CH0001','kh03','kh03';
 EXEC deleteReviewShop 'CH0001','kh02','kh02';
+
+SELECT dbo.[funcAvgRate]('CH0001')
 
 --- phần của Nam ---
  
@@ -277,32 +234,37 @@ exec insertProduct '4250102889072',
 'https://salt.tikicdn.com/cache/w1200/ts/product/a1/bf/9c/11ceb3f82e7f17a1f05ba47688cbd086.jpg',
 'white',
 'Features1. Listening to songs and calls, supporting listening to songs and making calls.'
-
-exec insertSell '21710195',
+select * from tblProduct
+exec insertSell 'CH0001',
 '8865872832669',
 '50',
 '20700'
 
-exec insertSell '21710187',
+exec insertSell 'CH0002',
 '4424616287949',
 '21',
 '21000'
 
 
-exec insertSell '21710187',
+exec insertSell 'CH0003',
 '8865872832669',
 '100',
 '20410'
 
-exec updateSell '21710187',
+exec updateSell 'CH0003',
 '8865872832669',
 '90',
 '20410'
 
+SELECT * FROM tblShop
+SELECT * FROM tblSell
 
-exec insertHas '061219171019501', '21710187', '8865872832669', '20410', '15'
 
-exec insertHas '061219171019501', '21710187', '4424616287949', '19000', '10'
+exec insertHas '061219171019501', 'CH0002', '8865872832669', '20410', '15'
+
+exec insertHas '061219171019501', 'CH0002', '4424616287949', '19000', '10'
+
+SELECT * FROM tblHas
 
 exec queryProductFromShop '21710187'
 
@@ -332,17 +294,20 @@ exec sortProductByMoney 'false'
 exec sortProduct 'm', '0', '0'
 
 --- PHẦN CỦA TÂM ---
-INSERT INTO tblCART VALUES ('C01','KH0001');
+INSERT INTO tblCART VALUES ('C01','KH0006');
 INSERT INTO tblCART VALUES ('C02','KH0002');
 INSERT INTO tblCART VALUES ('C03','KH0003');
 INSERT INTO tblCART VALUES ('C04','KH0004');
 INSERT INTO tblCART VALUES ('C05','KH0005');
+
+select * from tblCART
 
 INSERT INTO tblADD_CART VALUES ('CO1','8865872832669','CH0001',5);
 INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0001',2);
 INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0002',1);
 INSERT INTO tblADD_CART VALUES ('CO2','4424616287949','CH0001',2);
 
+select * from tblADD_CART
 
 INSERT INTO tblCATEGORY VALUES ('EL',N'Electronics',0);
 INSERT INTO tblCATEGORY VALUES ('FA',N'Fashion',0);
@@ -372,32 +337,30 @@ with result sets (
 	)
 )
 -- phần của ly --
-
+EXEC insertCustomerAccount 'KH0007','kh07','kh07','Nguyenn', 'Lyy','truclybk.cse@gmail.com', 0,'19990218','0834562109',1,'An Giang','Long Xuyên','Mỹ Hòa Hưng';
 -- Insert Data Telephone Number
-INSERT INTO dbo.tblTelephoneNumber VALUES ('0834562109', 'KH0001')
+select * from tblCustomer
+select * from tblTelephoneNumber
+INSERT INTO dbo.tblTelephoneNumber VALUES ('0834562109', 'KH0006')
 INSERT INTO dbo.tblTelephoneNumber VALUES ( '0395914514', 'KH0002')
 INSERT INTO dbo.tblTelephoneNumber VALUES ('0123456789', 'KH0003')
 INSERT INTO dbo.tblTelephoneNumber VALUES ('0998656689', 'KH0005')
 
 -- Insert Data Address
-INSERT INTO dbo.tblAddress VALUES(1,'KH0001','An Giang','Long Xuyên','Mỹ Hòa Hưng',NULL, '')
+INSERT INTO dbo.tblAddress VALUES(1,'KH0006','An Giang','Long Xuyên','Mỹ Hòa Hưng',NULL, '')
 INSERT INTO dbo.tblAddress VALUES(2,'KH0002','Hồ Chí Minh','Quận 10','P8',NULL, '')
 INSERT INTO dbo.tblAddress VALUES(3,'KH0003','Tây Ninh','Châu Thành','ABC',NULL, '')
 INSERT INTO dbo.tblAddress VALUES(4,'KH0004','Đồng Tháp','Sa Đéc','XYZ',NULL, '')
 INSERT INTO dbo.tblAddress VALUES(5,'KH0005','An Giang','Châu Đốc','Mỹ Bình',NULL, '')
 
 -- Insert Data Ordering
-INSERT INTO dbo.tblOrdering VALUES('MDH001', 'KH0001', '')
+select * from tblProduct
+INSERT INTO dbo.tblOrdering VALUES('MDH001', 'KH0006', '')
 INSERT INTO dbo.tblOrdering VALUES('MDH002', 'KH0002', '20190312')
 INSERT INTO dbo.tblOrdering VALUES('MDH003', 'KH0002', '20190312')
 INSERT INTO dbo.tblOrdering VALUES('MDH004', 'KH0002', '20190312')
 INSERT INTO dbo.tblOrdering VALUES('MDH005', 'KH0002', '20191119')
--- Insert Data Customer
-EXEC insertInformation 'KH0001', 'Nguyen', 'Ly','truclybk.cs@gmail.com', 0,'19990218'
-EXEC insertInformation 'KH0002', 'Nguyen', 'Nam', 'namnguyen@gmail.com', 0, '19981230'
-EXEC insertInformation 'KH0003', 'Huynh', 'Linh', 'hpplinh@gmail.com', 1, '19970101'
-EXEC insertInformation 'KH0004', 'Tran', 'Tam', 'tvtam@hcmut.edu.vn', 1, '20000518'
-EXEC insertInformation 'KH0005', 'Ngo', 'Liem', 'ntliem@hcmut.edu.vn', 1, '20011108'
+
 -- Update id introduce
 UPDATE dbo.tblCustomer SET id_intro = 'KH0005' WHERE id_customer = 'KH0001'
 INSERT INTO tblOrder VALUES ('MDH001','Trực tiếp','2019-12-09','2019-12-15','Đang xử lý','VIETTEL',30000,'','BLACKFRIDAY')
@@ -407,3 +370,10 @@ INSERT INTO tblOrder VALUES ('MDH004','Trực tiếp','2019-12-09','2019-12-16',
 INSERT INTO tblOrder VALUES ('MDH005','Trực tiếp','2019-11-19','2019-11-21','Đang xử lý','ALOGN',15000,'','FREESHIP')
 
 EXEC dbo.queryBillsBeforeOneDate '2019-12-11', 'KH0001' 
+select dbo.totalMoneyFromHas('MDH001')
+
+GO
+EXEC dbo.updateTelNum '0904523964', 'KH0001'
+EXEC queryCustomersInOneProvince 'An Giang' 
+EXEC queryCustomersInOneProvince 'Hồ Chí Minh'
+EXEC queryCustomersInOneProvince 'Hà Nội'

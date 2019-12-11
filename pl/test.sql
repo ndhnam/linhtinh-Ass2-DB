@@ -41,7 +41,9 @@ EXEC dbo.insertShopAccount
 --EXEC dbo.procedureChangePassword 'test1', 'test', 'test1';
 --EXEC dbo.procedureChangeProfileShop 'KH1', 'test1', 'test2', 'SHOP A', 111111111, 'address', 'email_1@gmail.com', 'link', '0', 'SPORT', 'Si';
 --EXEC dbo.writeReviewShop 'CH1','KH4',5,'Nice';
-
+select * from tblCustomer
+select * from tblTelephoneNumber
+select * from tblAddress
 SELECT * FROM dbo.tblAccount
 SELECT * FROM dbo.tblShop
 SELECT * FROM dbo.tblRate
