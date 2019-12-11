@@ -1,12 +1,12 @@
-﻿--Tâm 1713057--
+--Tâm 1713057--
 use dbTipee 
 go
 -- Table 
 create TABLE tblCART(
-	id			nvarchar(9) not null,
+	id			varchar(50) not null,
 	primary key(id),
 	--id nvarchar(9) primary key,
-	idclient	nvarchar(10) not null,
+	idclient	varchar(50) not null,
 	--foreign key(idclient) references Client(id)
 );
 GO
@@ -36,15 +36,20 @@ INSERT INTO tblCART VALUES ('1',12);
 
 INSERT INTO tblADD_CART VALUES ('1','123a',167,5);
 
-INSERT INTO tblCATEGORY VALUES ('DT',N'Điện tử',1);
+INSERT INTO tblCATEGORY VALUES ('EL',N'Electronics',1);
+INSERT INTO tblCATEGORY VALUES ('FA',N'Fashion',1);
+INSERT INTO tblCATEGORY VALUES ('BO',N'Book',1);
+INSERT INTO tblCATEGORY VALUES ('FO',N'FOOD',1);
+INSERT INTO tblCATEGORY VALUES ('ST',N'Stationery',1);
+INSERT INTO tblCATEGORY VALUES ('TO',N'Toy',1);
 
 INSERT INTO tblBELONG_CATEGORY VALUES ('123a','DT');
 go
 
---ALTER TABLE tblCART
+ALTER TABLE tblCART
 	ADD 
 		CONSTRAINT		fk_cart_customer		FOREIGN KEY (idclient)
-	REFERENCES tblCustomer(id)
+	REFERENCES tblCustomer(id_customer)
 	ON DELETE CASCADE
 	ON UPDATE CASCADE;
 go
@@ -84,4 +89,131 @@ ALTER TABLE tblBELONG_CATEGORY
 	ON DELETE CASCADE
 	ON UPDATE CASCADE;
 go 
+--- procedure insert + validate + print error
+Create Proc usp_insert_cate
+	@id				char(3),
+	@name			nvarchar(30),
+	@quantity		int	
+As	begin  
+--declare set 
+			begin try 
+		insert into tblCATEGORY(id, name, quantity) values (@id, @name, @quantity)
+		print 'Insert product successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert category
+Category was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+exec usp_insert_cate 'HO','home',3;
+exec usp_insert_cate 'HO','home',-1;
+go
+-- trigger after--
+create trigger check_quantity_trigger on tblADD_CART
+for insert
+as 
+begin
+	declare @quantity int
+	set @quantity = (select quantity from inserted)
+	if (@quantity <=0)
+	begin
+		print 'error: quantity must have value'
+		rollback
+	end
+end;
+go
+INSERT INTO tblADD_CART VALUES ('1','Toy','3',-1);
+---trigger after affect other table---
+CREATE TRIGGER Update_QuanofCate ON tblBELONG_CATEGORY
+FOR INSERT 
+AS
+BEGIN
 
+	DECLARE @idcate CHAR(3)
+
+	SELECT @idcate = Inserted.idcate FROM Inserted
+
+	UPDATE tblCATEGORY SET quantity=quantity+1 WHERE id = @idcate
+
+END
+GO
+INSERT INTO tblBELONG_CATEGORY VALUES ('231','HO');
+SELECT TOP 10 *
+		FROM tblCATEGORY
+		ORDER BY quantity ASC;
+go
+--Procedure has Query Statement hiểnthị dữ liệu,tham số đầu vào là giá trị trong mệnh đề WHERE và/hoặc Having
+--a. 1 câu truy vấn từ 2 bảng trở lên có mệnh đề where, order by---
+CREATE prOC usp_Sort_Name_Cate
+	as
+	begin
+
+	end
+go
+CREATE prOC usp_List_Cart		-- Link 4 relation: cart, product, addcart, customer
+	@first_name		NVARCHAR(20),
+	@last_name		NVARCHAR(20)
+	as
+	begin
+	declare @id_cus	varchar(50)
+	select @id_cus = id_customer from tblCustomer 
+	where first_name=@first_name and last_name=@last_name;
+	Select idproduct,name as name_pro,	idshop,	quantity
+	from 	(tblADD_CART INNER JOIN tblProduct
+	ON	tblADD_CART.idproduct=tblProduct.id) INNER JOIN tblCART 
+	on	tblADD_CART.idcart=tblCART.id
+	where	tblCART.idclient=@id_cus
+	order by quantity ASC;	
+	--Select id_customer from tblCustomer 
+
+	end
+go
+exec	usp_List_Cart 'b','a'
+WITH RESULT SETS
+(
+(
+[Product ID] varchar(50),
+[Product Name] nvarchar(100),
+[Shop ID] varchar(50),
+[Order Quantity] int
+)
+)
+go
+--procedure có aggreate function, group by, having, where và order by có liên kết từ 2 bảng trở lên
+CREATE PROCEDURE usp_Pro_MulFunction
+	-- Add the parameters for the stored procedure here
+	@name_pro nvarchar(100)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+    -- Insert statements for procedure here
+	select idcate, name 
+	from tblBELONG_CATEGORY inner join
+			tblCATEGORY on idcate=id
+	where idproduct IN (SELECT idproduct 
+	FROM tblBELONG_CATEGORY
+	Group by idproduct
+	Having count(idcate) > 1)
+	and idproduct IN (select id from tblProduct 
+						where name=@name_pro)
+END
+GO
+exec usp_Pro_MulFunction 'book'
+with result sets (
+	( [Code Cate] varchar(50) ,
+		[Name Cate]	varchar(50)
+	)
+)
+
+go
+/* Chứa câu lệnh IF và/hoặc LOOP để tính toán dữ liệu được lưu trữ
+b. Chứa câu lệnh truy vấn dữ liệu, lấy dữ liệu từ câu truy vấn để kiểm tra tính toán
+c. Có tham số đầu vào và kiểm tra tham số đầu vào
+Mỗi thành viên viết 2 câu SELECT để minh họa việc gọi hàm trong câu SELECT */
