@@ -356,3 +356,4 @@ BEGIN
 END
 
 GO
+SELECT * FROM queryCusInMonthBirth(2, 18, 30)
