@@ -4006,6 +4006,29 @@ thead {
 	border-radius: 3px;
 	transition: all 0.3s ease-in-out;
 }
+.blue-button {
+	display: block;
+	margin-top: 50px;
+	margin-right: 40px;
+	margin-bottom: 50px;
+	width: 200px;
+	border-radius: 0;
+	height: 36px;
+	border: none;
+	line-height: 24px;
+	padding: 6px 10px;
+	float: left;
+	font-weight: 400;
+	text-transform: uppercase;
+	color: #ffffff;
+	background-color: #363f4d;
+	border-radius: 3px;
+	transition: all 0.3s ease-in-out;
+}
+.blue-button:hover {
+	background: #91c9fc;
+}
+
 .register-button:hover {
 	background: #91c9fc;
 }

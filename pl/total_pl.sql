@@ -12,14 +12,14 @@ CREATE TABLE tblAccount
 CREATE TABLE tblShop
 (
 	id				VARCHAR(6)		PRIMARY KEY,	-- ID
-	name			NVARCHAR(50)		NOT NULL,		-- Tên Shop
+	name			NVARCHAR(50)		NOT NULL,	-- Tên Shop
 	number			INT,							-- Số điện thoại
-	address			NVARCHAR(100),						-- Địa chỉ
+	address			NVARCHAR(100),					-- Địa chỉ
 	email			VARCHAR(50),					-- Email
 	avatar			VARCHAR(100),					-- Ảnh đại diện
 	classify		INT,							-- Phân loại (0 - không chuyên, 1 - chuyên)
-	typesOfShop		NVARCHAR(30),						-- Sản phẩm chuyên về (danh mục)
-	distribution	NVARCHAR(10),						-- Sỉ/lẻ
+	typesOfShop		NVARCHAR(30),					-- Sản phẩm chuyên về (danh mục)
+	distribution	NVARCHAR(10),					-- Sỉ/lẻ
 	total_rate		INT,							-- Tổng lượt đánh giá --
 	CONSTRAINT fk_shop_acc_id FOREIGN KEY (id) REFERENCES tblAccount(id),
 );
@@ -29,7 +29,7 @@ CREATE TABLE tblRate
 	idCustomer		VARCHAR(6)		NOT NULL,		-- id khách hàng 
 	idShop			VARCHAR(6)		NOT NULL,		-- id cửa hàng 
 	star			INT				NOT NULL,		-- số sao khách hàng đánh giá 
-	describe		NVARCHAR(100),						-- đánh giá 
+	describe		NVARCHAR(100),					-- đánh giá 
 	PRIMARY KEY(idCustomer, idShop),
 	CONSTRAINT fk_rate_shop_id FOREIGN KEY (idShop) REFERENCES tblShop(id)
 	--CONSTRAINT fk_rate_cus_id FOREIGN KEY (idCustomer) REFERENCES tblCustomer(id_customer)
