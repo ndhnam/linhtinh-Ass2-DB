@@ -156,8 +156,8 @@ As
 	begin  
 --declare set 
 			begin try 
-		insert into tblADD_CART(id, idproduct,idshop,quantity) values (@id, @idproduct,@idshop,@quantity)
-		print 'Insert product successfully'
+		insert into tblADD_CART(idcart, idproduct,idshop,quantity) values (@idcart, @idproduct,@idshop,@quantity)
+		print 'Insert  successfully'
 		return @@ROWCOUNT
 			end try
 --- catch
