@@ -1,10 +1,5 @@
 <!doctype html>
-
 <html class="no-js" lang="zxx">
- <?php
-    include("ket_noi.php");	
-?>  
-<!-- index28:48-->
 <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -291,16 +286,6 @@
                                     <nav>
                                         <ul>
                                             <li class="dropdown-holder"><a href="index.php">TRANG CHỦ</a>
-                                                <ul class="hb-dropdown">
-<<<<<<< HEAD:index.php
-                                                    <li class="active"><a href="index.php">Trang chủ 1</a></li>
-                                                    <li><a href="index-2.php">Trang chủ 2</a></li>
-                                                    <li><a href="index-3.php">Trang chủ 3</a></li>
-                                                    <li><a href="index-4.php">Trang chủ 4</a></li>
-=======
-                                                    <li class="active"><a href="index.html">Trang chủ 1</a></li>
->>>>>>> 9947483f4717f22cbe905cc4237fc7265b30f2aa:index.html
-                                                </ul>
                                             </li>
                                             <li class="megamenu-holder"><a href="shop-left-sidebar.php">CỬA HÀNG</a>
                                                 <ul class="megamenu hb-megamenu">
