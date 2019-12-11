@@ -251,3 +251,4 @@ CREATE TABLE tblAdrress
 ALTER TABLE tblAdrress
 ADD CONSTRAINT FK_Customer_Address
 FOREIGN KEY(id_customer) REFERENCES tblCustomer(id_customer);
+GO

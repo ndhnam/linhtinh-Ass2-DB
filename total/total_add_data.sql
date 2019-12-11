@@ -288,3 +288,44 @@ exec sortProductByName 'false'
 exec sortProductByMoney 'false'
 
 exec sortProduct 'm', '0', '0'
+
+--- PHẦN CỦA TÂM ---
+INSERT INTO tblCART VALUES ('C01','KH0001');
+INSERT INTO tblCART VALUES ('C02','KH0002');
+INSERT INTO tblCART VALUES ('C03','KH0003');
+INSERT INTO tblCART VALUES ('C04','KH0004');
+INSERT INTO tblCART VALUES ('C05','KH0005');
+
+INSERT INTO tblADD_CART VALUES ('CO1','8865872832669','CH0001',5);
+INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0001',2);
+INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0002',1);
+INSERT INTO tblADD_CART VALUES ('CO2','4424616287949','CH0001',2);
+
+
+INSERT INTO tblCATEGORY VALUES ('EL',N'Electronics',0);
+INSERT INTO tblCATEGORY VALUES ('FA',N'Fashion',0);
+INSERT INTO tblCATEGORY VALUES ('BO',N'Book',0);
+INSERT INTO tblCATEGORY VALUES ('FO',N'FOOD',0);
+INSERT INTO tblCATEGORY VALUES ('ST',N'Stationery',0);
+INSERT INTO tblCATEGORY VALUES ('TO',N'Toy',0);
+
+INSERT INTO tblBELONG_CATEGORY VALUES ('8865872832669','EL');
+INSERT INTO tblBELONG_CATEGORY VALUES ('4424616287949','EL');
+exec usp_insert_cate 'HO','home',3;
+exec usp_insert_cate 'HO','home',-1;
+exec	usp_List_Cart 'b','a'
+WITH RESULT SETS
+(
+(
+[Product ID] varchar(50),
+[Product Name] nvarchar(100),
+[Shop ID] varchar(50),
+[Order Quantity] int
+)
+)
+exec usp_Pro_MulFunction 'book'
+with result sets (
+	( [Code Cate] varchar(50) ,
+		[Name Cate]	varchar(50)
+	)
+)

@@ -224,3 +224,32 @@ end
 
 -- ham sort san pham theo ten hoac theo gia
 go
+
+--- PHẦN CỦA TÂM ---
+CREATE FUNCTION ufnsum
+(
+	@first_name		NVARCHAR(20),
+	@last_name		NVARCHAR(20)
+)
+RETURNS int
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @ResultVar	int
+	declare @id_cus	varchar(50)
+	select @id_cus = id_customer from tblCustomer 
+	where first_name=@first_name and last_name=@last_name;
+
+	Select @ResultVar = count(*)
+	from 	(tblADD_CART INNER JOIN tblProduct
+	ON	tblADD_CART.idproduct=tblProduct.id) INNER JOIN tblCART 
+	on	tblADD_CART.idcart=tblCART.id
+	where	tblCART.idclient=@id_cus;
+	
+	-- Return the result of the function
+	RETURN @ResultVar
+END
+GO
+
+select dbo.ufnsum('ly','tran') as TotalProductinCart;
+go
