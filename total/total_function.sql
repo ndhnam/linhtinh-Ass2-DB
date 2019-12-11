@@ -297,3 +297,64 @@ GO
 
 select dbo.ufnsum('ly','tran') as TotalProductinCart;
 go
+
+--- phần của ly ---
+------------------ FUNCTION ------------------
+
+-- Hàm tính tổng điểm số điểm của khách hàng dựa trên số bill
+GO 
+CREATE FUNCTION getScoreOfCustomer(@id_customer VARCHAR(6))
+RETURNS INT
+AS
+BEGIN
+	DECLARE @scores INT
+	SET @scores = 0
+	DECLARE @num_of_bills INT = (SELECT num_of_bills FROM dbo.tblCustomer WHERE id_customer = @id_customer)
+	IF @num_of_bills <= 10
+	BEGIN
+		SET @scores = @num_of_bills 
+	END
+	ELSE IF @num_of_bills <= 50
+	BEGIN
+		SET @scores = 10 + (@num_of_bills - 10) * 2
+	END
+	ELSE IF @num_of_bills <= 100
+	BEGIN
+		SET @scores = 10 + 40 * 2 + (@num_of_bills - 50) * 3
+    END    
+	ELSE
+    BEGIN
+		SET @scores = 10 + 40 * 2 + 50 * 3 + (@num_of_bills - 100) * 5
+    END
+	RETURN @scores
+END
+
+GO 
+SELECT dbo.getScoreOfCustomer('KH0001')
+
+-- Lấy tất cả khách hàng có cùng một tháng sinh nào đó và tuổi nằm trong 1 khoảng
+GO
+CREATE FUNCTION queryCusInMonthBirth(@month INT, @age_low INT, @age_high INT)
+RETURNS @tblCustomerBirth TABLE
+(
+	id_customer		VARCHAR(6),
+	last_name		NVARCHAR(20),
+	first_name		NVARCHAR(20),
+	email			VARCHAR(100),
+	sex				BIT,
+	date_of_birth	DATE
+)
+AS
+BEGIN
+	IF @month < 0 OR @month > 12
+	BEGIN
+		RETURN
+	END
+	INSERT INTO @tblCustomerBirth
+	SELECT id_customer, last_name, first_name, email, sex, date_of_birth
+	FROM tblCustomer
+	WHERE MONTH(date_of_birth) = @month AND  @age_low < (YEAR(GETDATE()) - YEAR(date_of_birth)) AND (YEAR(GETDATE()) - YEAR(date_of_birth)) < @age_high
+	RETURN
+END
+
+GO
