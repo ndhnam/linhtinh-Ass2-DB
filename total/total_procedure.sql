@@ -171,6 +171,51 @@ BEGIN
 END
 GO
 
+-------PHẦN CỦA LIÊM---------
+create procedure sortTransportationByCost
+	@isIncrease bit
+as
+begin
+	if @isIncrease = 1
+	begin
+		select *
+		from tblTransportation
+		order by costLevel
+	end
+	else
+	begin
+		select *
+		from tblTransportation
+		order by costLevel desc
+	end
+end
+exec sortTransportationByCost 0
+go
+
+create procedure updateOrderStatus
+	@idOrder Varchar(50),
+	@orderStatus Nchar(50)
+as
+begin
+	update tblOrder
+	set orderStatus = @orderStatus
+	Where id = @idOrder
+end
+
+create procedure searchPromotionOfShop
+	@nameShop NVARCHAR(50)
+as
+begin
+	select id,idShop,startTime,endTime
+	from tblPromotion
+	where exists
+	(SELECT ID 
+	FROM tblShop 
+	where name = @nameShop)
+	
+end
+
+drop procedure searchPromotionOfShop
 --- PHẦN CỦA NAM ---
 go
 create procedure queryProductFromShop

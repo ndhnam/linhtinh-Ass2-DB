@@ -21,7 +21,7 @@ go
 select dbo.totalMoneyFromHas('MDH001')
 
 go
-----------Liêm-----------
+----------Liï¿½m-----------
 CREATE FUNCTION totalMoneyByDepreciate
 (
 	@idOrder VARCHAR(50)
@@ -36,6 +36,47 @@ BEGIN
 	end
 	return @sum
 END
+
+CREATE FUNCTION totalMoneyByPerCent
+(
+	@idOrder VARCHAR(50)
+)
+returns float
+BEGIN
+	declare @sum int
+	declare @decrease float
+	set @sum = dbo.totalMoneyFromHas(@idOrder)
+	set @decrease = @sum * (select decreasePercent from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id )
+	if(@sum >= (select minTotal from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
+	begin
+		if (@decrease > (select decreaseMax from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
+		begin
+			set @sum = ((@sum + (select costLevel From tblTransportation join tblOrder on tblTransportation.id = tblOrder.transportCode)) - (select decreaseMax from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
+			return @sum
+		end
+		else
+		begin
+			set @sum = ((@sum + (select costLevel From tblTransportation join tblOrder on tblTransportation.id = tblOrder.transportCode)) - @decrease)
+		end
+	end
+	return @sum
+END
+go
+
+CREATE FUNCTION totalMoneyOfTransportation
+(
+	@nameTrans VARCHAR(50)
+)
+returns int
+begin
+	declare @idTransportation VARCHAR(50)
+	set @idTransportation =(select id
+	from tblTransportation
+	where nameTrans = @nameTrans)
+	declare @sum int
+	set @sum = (select count (*) from tblOrder where transportCode = @idTransportation) * (select id from tblTransportation	where nameTrans = @nameTrans)
+	return @sum
+end
 
 --- LINH --- 1710165 ---
 GO

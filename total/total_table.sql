@@ -89,7 +89,7 @@ ALTER TABLE tblSell
 -- Phần của Liêm --
 CREATE TABLE tblPromotion
 (
-	id					VARCHAR(50)		PRIMARY KEY,
+	id					VARCHAR(50)	NOT NULL,
 	startTime			Date		NOT NULL,
 	endTime				Date		NOT NULL,
 	amountOfPromotion	Int			NOT NULL,
@@ -99,7 +99,8 @@ CREATE TABLE tblPromotion
 	depreciate			Int			NOT NULL,
 	decreasePercent		Int			NOT NULL,
 	decreaseMax			Int			NOT NULL,
-	idShop				VARCHAR(50)	NOT NULL
+	idShop				VARCHAR(50)	NOT NULL,
+	PRIMARY KEY(id, idshop)
 );
  ALTER TABLE tblPromotion
  ADD CONSTRAINT fk_IdShop
