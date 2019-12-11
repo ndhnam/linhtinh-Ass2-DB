@@ -1,7 +1,7 @@
 -- Ngô Thanh Liêm - 1711929
 USE dbTipee
 Go
-
+-------Nam------
 create function totalMoneyFromHas
 (
 	@idOrder Varchar(50)
@@ -17,8 +17,11 @@ begin
 	return @totalMoney
 end
 go
-exec totalMoneyFromHas('MDH001')
+go
+select dbo.totalMoneyFromHas('MDH001')
 
+go
+----------Liêm-----------
 CREATE FUNCTION totalMoneyByDepreciate
 (
 	@idOrder VARCHAR(50)
@@ -26,10 +29,10 @@ CREATE FUNCTION totalMoneyByDepreciate
 returns float
 BEGIN
 	declare @sum int
-	set @sum = totalMoneyFromHas(@idOrder)
+	set @sum = dbo.totalMoneyFromHas(@idOrder)
 	if(@sum >= (select minTotal from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
 	begin
-		set @sum = ((totalMoneyFromHas(@idOrder)+(select costLevel From tblTransportation join tblOrder on tblTransportation.id = tblOrder.transportCode))-(select depreciate from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
+		set @sum = ((dbo.totalMoneyFromHas(@idOrder)+(select costLevel From tblTransportation join tblOrder on tblTransportation.id = tblOrder.transportCode))-(select depreciate from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
 	end
 	return @sum
 END

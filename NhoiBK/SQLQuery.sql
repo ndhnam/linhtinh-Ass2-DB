@@ -18,6 +18,7 @@ CREATE TABLE tblPromotion
 	decreaseMax			Int			NOT NULL,
 	idShop				VARCHAR(6)	NOT NULL
 );
+go
 
 CREATE TABLE tblTransportation
 (
@@ -28,6 +29,8 @@ CREATE TABLE tblTransportation
 	costLevel		Int			NOT NULL,
 	addressTrans	nChar(100)	NOT NULL
 );
+go
+
 CREATE TABLE tblOrder
 (
 	id				VARCHAR(6)	PRIMARY KEY,
@@ -40,6 +43,7 @@ CREATE TABLE tblOrder
 	idCustomer		Char(9)		NOT NULL,
 	promotionCode	VARCHAR(6)	NOT NULL
 ); 
+go
 -- Thêm ràng buộc khóa ngoại
 
 ALTER TABLE dbo.tblPromotion
@@ -89,10 +93,10 @@ BEGIN
 	END
 END
 go
+
 drop trigger check_amount_of_promotion
 exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuyễn mãi tết 2020',500000,'đồ gia dụng',150000,10,200000,'ch0001'
-
-
+go
 
 
 	--thay doi so luong khuyen mai
@@ -111,11 +115,13 @@ exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuy�
  END
  go
  drop trigger update_amount_of_Promotion
-
+ 
  exec insertOrder 'MDH014','Chuyển khoản','2019-12-01','2019-12-05','Đã giao','GRAB',23000,'','BLACK'
 select * from tblPromotion
 select * from tblOrder
 select * from tblTransportation
+go
+
 	-- cap nhat phi van chuyen
 
 
@@ -139,6 +145,7 @@ begin
 	end
 end
 exec sortTransportationByCost 0
+go
 	--tim kiem
 	
 
@@ -152,13 +159,32 @@ returns float
 BEGIN
 	declare @sum int
 	set @sum = totalMoneyFromHas(@idOrder)
-	if(@sum >= (select minTotal from tblOrder join tblPromotion on promotionCode = id ))
+	if(@sum >= (select minTotal from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
 	begin
-		set @sum = totalMoneyFromHas(@idOrder)+(select costLevel From tblTransportation join tblOrder on tblTransportation.id = tblOrder.transportCode)-(select depreciate from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id )
+		set @sum = ((totalMoneyFromHas(@idOrder)
+		+(select costLevel From tblTransportation join tblOrder on tblTransportation.id = tblOrder.transportCode))
+		-(select depreciate from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
 	end
 	return @sum
 END
+go
 
+CREATE FUNCTION totalMoneyByPercent
+(
+	@idOrder VARCHAR(50)
+)
+returns float
+BEGIN
+	declare @sum int
+	set @sum = totalMoneyFromHas(@idOrder)
+	if(@sum >= (select minTotal from tblOrder join tblPromotion on tblOrder.promotionCode = tblPromotion.id ))
+	begin
+		declare @decreasePercent float
+		set @decreasePercent = @sum * (select )
+		
+	end
+	return @sum
+END
 
 
 

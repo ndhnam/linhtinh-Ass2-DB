@@ -127,7 +127,7 @@ FOREIGN KEY(promotionCode) REFERENCES tblPromotion(id)
 ON DELETE CASCADE
 ALTER TABLE dbo.tblOrder
 ADD CONSTRAINT fk_idCustomer
-FOREIGN KEY(idCustomer) REFERENCES tblCustomer(id)
+FOREIGN KEY(idCustomer) REFERENCES tblCustomer(id_customer)
 ON DELETE CASCADE
 
 -- Phần của Tâm --
