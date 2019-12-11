@@ -2,7 +2,8 @@
 go
 -----TRIGGEER------
 ------NGÔ THANH LIÊM------
-	--KTRA SO LUONG 
+	--KTRA SO LUONG \
+
 CREATE TRIGGER check_amount_of_promotion ON tblPromotion FOR INSERT AS
 BEGIN
 	DECLARE @amountOfPromotion INT
@@ -15,6 +16,7 @@ BEGIN
 END
 go
 drop trigger check_amount_of_promotion
+go
 exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuyễn mãi tết 2020',500000,'đồ gia dụng',150000,10,200000,'ch0001'
 
 
@@ -32,12 +34,15 @@ exec insertPromotion 'TET3','2019-12-01','2020-01-01',-6,'chương trình khuy�
 		WHERE tblPromotion.id = @promotionCode
 	END
  END
+ 
  go
+
  drop trigger update_amount_of_Promotion
  exec insertOrder 'MDH014','Chuyển khoản','2019-12-01','2019-12-05','Đã giao','GRAB',23000,'','BLACK'
 select * from tblPromotion
 select * from tblOrder
 select * from tblTransportation
+go
 
 --- Phần của Linh - 1710165 ---
 GO
@@ -120,4 +125,78 @@ begin
 	from tblSell
 	join inserted on tblSell.idProduct = inserted.idProduct and tblSell.idShop = inserted.idShop
 end
+GO
+-- phần của ly --
+------------------ TRIGGER ------------------
+
+-- Trigger after insert bill
+GO 
+CREATE TRIGGER updateTotalBills ON tblOrdering AFTER INSERT AS
+BEGIN
+	DECLARE @count_id_bill INT = 
+	(
+		SELECT COUNT(id_bill) 
+		FROM tblOrdering 
+		WHERE id_customer = (SELECT id_customer FROM Inserted)
+	)
+	UPDATE tblCustomer SET num_of_bills = @count_id_bill 
+	WHERE id_customer = (SELECT id_customer FROM Inserted)
+END
+
+-- Trigger Introduce Customer
+GO
+CREATE TRIGGER checkIntro ON tblCustomer FOR UPDATE AS
+BEGIN
+	DECLARE @count_bill_old INT = (SELECT num_of_bills FROM Deleted) 
+	DECLARE @count_bill_cur INT = (SELECT num_of_bills FROM Inserted) 
+	IF (@count_bill_cur = @count_bill_old) 
+	BEGIN
+		DECLARE @id_customer	VARCHAR(6)
+		DECLARE @id_cur_intro	VARCHAR(6)
+		DECLARE @id_intro	VARCHAR(6)
+		SET @id_customer = (SELECT id_customer FROM inserted)
+		SET @id_intro = (SELECT id_intro FROM inserted)
+		SET @id_cur_intro = (SELECT id_intro FROM deleted)
+		IF (@id_cur_intro IS NOT NULL) 
+		BEGIN
+			PRINT 'Tài khoản này đã được giới thiệu'
+			ROLLBACK
+		END
+		IF (@id_customer = @id_intro) 
+		BEGIN
+			PRINT 'Không được tự giới thiệu chính mình'
+			ROLLBACK
+		END
+		INSERT INTO tblIntro(id_intro, id_reduce) VALUES (@id_intro, @id_customer)
+	END 
+END
+ -- phần của tâm --
+ -- trigger after--
+create trigger check_quantity_trigger on tblADD_CART
+for insert
+as 
+begin
+	declare @quantity int
+	set @quantity = (select quantity from inserted)
+	if (@quantity <=0)
+	begin
+		print 'error: quantity must have value'
+		rollback
+	end
+end;
+go
+INSERT INTO tblADD_CART VALUES ('1','Toy','3',-1);
+---trigger after affect other table---
+CREATE TRIGGER Update_QuanofCate ON tblBELONG_CATEGORY
+FOR INSERT 
+AS
+BEGIN
+
+	DECLARE @idcate CHAR(3)
+
+	SELECT @idcate = Inserted.idcate FROM Inserted
+
+	UPDATE tblCATEGORY SET quantity=quantity+1 WHERE id = @idcate
+
+END
 GO
