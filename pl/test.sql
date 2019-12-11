@@ -47,6 +47,9 @@ select * from tblAddress
 SELECT * FROM dbo.tblAccount
 SELECT * FROM dbo.tblShop
 SELECT * FROM dbo.tblRate
+select * from tblCustomer
+select * from tblTelephoneNumber
+select * from tblAddress
 DELETE FROM dbo.tblAccount
 DELETE FROM dbo.tblShop
 DELETE FROM dbo.tblRate
