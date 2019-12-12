@@ -538,6 +538,80 @@ Category was already exist'
 			end catch
 	end
 Go
+--Procedure insert cart
+Create Proc usp_insert_cart
+	@id		varchar(50) ,
+	@idclient	varchar(50)	
+As	
+	begin  
+--declare set 
+			begin try 
+		insert into tblCART(id, idclient) values (@id, @idclient)
+		print 'Insert product successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert cart
+			Cart was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+	exec usp_insert_cart 'C04','KH0004';
+	exec usp_insert_cart 'C05','KH0005';
+go
+-- Procedure insert add_cart
+Create Proc usp_insert_add_cart
+	@idcart		VARCHAR(50),
+	@idproduct	VARCHAR(50),
+	@idshop		VARCHAR(50),
+	@quantity	int	
+As	
+	begin  
+--declare set 
+			begin try 
+		insert into tblADD_CART(idcart, idproduct,idshop,quantity) values (@idcart, @idproduct,@idshop,@quantity)
+		print 'Insert  successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert addcart
+			addcart was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+	exec usp_insert_add_cart 'CO1','4424616287949','CH0002',1;
+	exec usp_insert_add_cart 'CO2','4424616287949','CH0001',2;
+go
+-- Procedure insert belong_cate
+Create Proc usp_insert_belong_cate
+	@idcate		CHAR(3),
+	@idproduct	VARCHAR(50)		
+As	
+	begin  
+--declare set 
+			begin try 
+		insert into tblBELONG_CATEGORY(idcate, idproduct) values (@idcate, @idproduct)
+		print 'Insert product successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert belong_cate
+			belong_cate was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+	exec usp_insert_belong_cate '8865872832669','EL';
+	exec usp_insert_belong_cate '4424616287949','EL';
+go							   
 CREATE PROCEDURE usp_List_Cart		-- Link 4 relation: cart, product, addcart, customer
 	@first_name		NVARCHAR(20),
 	@last_name		NVARCHAR(20)
