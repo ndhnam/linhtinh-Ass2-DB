@@ -82,7 +82,7 @@ BEGIN
 		END
 END
 GO
-ALTER PROCEDURE insertCustomerAccount
+CREATE PROCEDURE insertCustomerAccount
 	@id_customer VARCHAR(6),
 	@username VARCHAR(32),
 	@password VARCHAR(50),
@@ -114,7 +114,8 @@ BEGIN
 		IF @count_id = 0 AND @count_user = 0
 			BEGIN
 				INSERT INTO dbo.tblAccount(id, username, password) VALUES (@id_customer, @username, @afterHashPassword)
-				INSERT INTO dbo.tblCustomer(id_customer, last_name, first_name, email, sex, date_of_birth) VALUES (@id_customer, @last_name, @first_name, @email, @sex, @date_of_birth)
+				INSERT INTO dbo.tblCustomer(id_customer, last_name, first_name, email, sex, date_of_birth) 
+				VALUES (@id_customer, @last_name, @first_name, @email, @sex, @date_of_birth)
 				INSERT INTO dbo.tblTelephoneNumber VALUES (@tel_num, @id_customer)
 				INSERT INTO dbo.tblAddress VALUES(@stt,@id_customer,@province,@city,@ward,NULL,'')
 			END

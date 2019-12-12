@@ -19,7 +19,6 @@ CREATE TABLE tblShop
 	typesOfShop		NVARCHAR(30),						-- Sản phẩm chuyên về (danh mục)
 	distribution	NVARCHAR(10),						-- Sỉ/lẻ
 	total_rate		INT,							-- Tổng lượt đánh giá --
-	--CONSTRAINT fk_shop_acc_id FOREIGN KEY (id) REFERENCES tblAccount(id),
 );
 
 CREATE TABLE tblRate
@@ -29,8 +28,6 @@ CREATE TABLE tblRate
 	star			INT				NOT NULL,		-- số sao khách hàng đánh giá 
 	describe		NVARCHAR(100),						-- đánh giá 
 	PRIMARY KEY(idCustomer, idShop)
-	--CONSTRAINT fk_rate_shop_id FOREIGN KEY (idShop) REFERENCES tblShop(id)
-	--CONSTRAINT fk_rate_cus_id FOREIGN KEY (idCustomer) REFERENCES tblCustomer(id_customer)
 );
 
 -- Phần của Nam --
@@ -113,9 +110,7 @@ GO
 CREATE TABLE tblCART(
     id          VARCHAR(50) NOT NULL,
     PRIMARY KEY(id),
-    --id nvarchar(9) primary key,
-    idclient    VARCHAR(50) NOT NULL,
-    --foreign key(idclient) references Client(id)
+    idclient    VARCHAR(50) NOT NULL
 );
 GO
 CREATE TABLE tblADD_CART(

@@ -389,7 +389,7 @@
                                                     </li>
                                                     <li><a href="index.php">Other Pages 2</a>
                                                         <ul>
-                                                            <li><a href="contact.php">Contact</a></li>
+                                                            <li><a href="transportation.php">Contact</a></li>
                                                             <li><a href="about-us.php">About Us</a></li>
                                                             <li><a href="faq.php">FAQ</a></li>
                                                             <li><a href="404.php">404 Error</a></li>
@@ -398,7 +398,7 @@
                                                 </ul>
                                             </li>
                                             <li><a href="about-us.php">About Us</a></li>
-                                            <li><a href="contact.php">Contact</a></li>
+                                            <li><a href="transportation.php">Contact</a></li>
                                             <li><a href="shop-left-sidebar.php">Smartwatch</a></li>
                                             <li><a href="shop-left-sidebar.php">Accessories</a></li>
                                         </ul>
@@ -441,53 +441,7 @@
                         <div class="col-sm-12 col-md-12 col-xs-12ic col-lg-12 mb-30">
                             <!-- Login Form s-->
                             <form action="#" >
-                                <div class="login-form">
-                                    <h4 class="login-title">Cửa hàng của tôi</h4>
-                                    <div class="row">
-										<div class="col-sm-3 col-md-3 col-xs-3ic col-lg-3 mb-30">
-                                        <div class="team-member mb-60 mb-sm-30 mb-xs-30">
-                                			<div class="team-thumb">
-                                    		<img src="images/team/1.png" alt="Our Team Member">
-                                			</div>                               
-                            			</div>
-										</div>
-										<div class="col-sm-8 col-md-8 col-xs-8ic col-lg-8 mb-30">
-											<div class="col-md-12 col-12">
-                                            	<label>ID Cửa hàng:</label>
-                                            	<h5>CH0001</h5>
-												<label>Tên của hàng:</label>
-                                            	<h5>Tên</h5>
-												<label>Số điện thoại:</label>
-                                            	<h5>+84 (0) 123 456 789</h5>
-												<label>Email:</label>
-                                            	<h5>email@gmail.com</h5>
-												<label>Phân loại:</label>
-                                            	<h5>Chuyên</h5>
-												<label>Sản phẩm:</label>
-                                            	<h5>...</h5>
-												<label>Phân phối:</label>
-                                            	<h5>Sỉ</h5>
-												<label>Đánh giá trung bình</label>
-												<div class="rating-box">
-                                                            <ul class="rating">
-                                                                <li><i class="fa fa-star-o"></i></li>
-                                                                <li><i class="fa fa-star-o"></i></li>
-                                                                <li><i class="fa fa-star-o"></i></li>
-                                                                <li class="no-star"><i class="fa fa-star-o"></i></li>
-                                                                <li class="no-star"><i class="fa fa-star-o"></i></li>
-																<li>3.2</li>
-                                                            </ul>
-                                                        </div>
-												<div class="col-md-20">
-												<button class="blue-button mt-0">Thay đổi thông tin</button>
-												</div>
-												<div class="col-md-12">
-												<button class="blue-button mt-0">Đổi mật khẩu</button>
-												</div>
-												</div>
-                                        	</div>
-										</div>
-                                    </div>
+                               
                                 </div>
                             </form>
                         </div>

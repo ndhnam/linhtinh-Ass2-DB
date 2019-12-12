@@ -399,18 +399,32 @@
                                                     </li>
                                                     <li><a href="index.html">Other Pages 2</a>
                                                         <ul>
+<<<<<<< HEAD
+                                                            <li><a href="transportation.php">Contact</a></li>
+                                                            <li><a href="about-us.php">About Us</a></li>
+                                                            <li><a href="faq.php">FAQ</a></li>
+                                                            <li><a href="404.php">404 Error</a></li>
+=======
                                                             <li><a href="contact.html">Contact</a></li>
                                                             <li><a href="about-us.html">About Us</a></li>
                                                             <li><a href="faq.html">FAQ</a></li>
                                                             <li><a href="404.html">404 Error</a></li>
+>>>>>>> a13ac9ca7bc549c6030df03ac077ba4a9154d83e
                                                         </ul>
                                                     </li>
                                                 </ul>
                                             </li>
+<<<<<<< HEAD
+                                            <li><a href="about-us.php">About Us</a></li>
+                                            <li><a href="transportation.php">Contact</a></li>
+                                            <li><a href="shop-left-sidebar.php">Smartwatch</a></li>
+                                            <li><a href="shop-left-sidebar.php">Accessories</a></li>
+=======
                                             <li><a href="about-us.html">About Us</a></li>
                                             <li><a href="contact.html">Contact</a></li>
                                             <li><a href="shop-left-sidebar.html">Smartwatch</a></li>
                                             <li><a href="shop-left-sidebar.html">Accessories</a></li>
+>>>>>>> a13ac9ca7bc549c6030df03ac077ba4a9154d83e
                                         </ul>
                                     </nav>
                                 </div>
