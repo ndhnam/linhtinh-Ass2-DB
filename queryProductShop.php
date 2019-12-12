@@ -86,7 +86,7 @@
 <div class="col-sm-4">
 </div>
 <div class="col-sm-5">
-<h2>Query Product From Shop</h2>
+<h2>Query Forduct From Shop</h2>
 <?php
     require('connect_db.php');
 ?>
@@ -97,6 +97,7 @@
         <label for="pid">Id Shop:</label>
         <input id="pid" name="pid" type="text" value="" required="true">
     </div>
+
     <p>
         <input type="submit" value="Search" class="btn btn-info">
     </p>

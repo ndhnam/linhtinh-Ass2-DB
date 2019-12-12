@@ -145,7 +145,7 @@ if( $result === false ) {
         }
     }
 }else{
-$indexURL = 'queryProductFromShop.php';
+$indexURL = "queryProductFromShop.php";
 header('Location: '.$indexURL);
 }
 ?>
