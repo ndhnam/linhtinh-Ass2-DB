@@ -10,8 +10,8 @@
    // $sql='SELECT * FROM USERS';
    // $query=sqlsrv_query($conn,$sql);
     // $sql_sp='SELECT * FROM tblProduct';
-    $sql_sp='select * from ProductSortedPrice() order by unitPrice';
-    $query_sp=sqlsrv_query($conn,$sql_sp);
+    $sql_spSorted="select * from ProductSortedPrice() order by unitPrice";
+    $query_spSorted=sqlsrv_query($conn,$sql_spSorted);
    ?> 
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -503,7 +503,7 @@
                                     <div id="grid-view" class="tab-pane fade active show" role="tabpanel">
                                         <div class="product-area shop-product-area">
                                             <div class="row">
-                                                <?php while ($row = sqlsrv_fetch_array($query_sp,SQLSRV_FETCH_NUMERIC)) : ?>
+                                                <?php while ($row = sqlsrv_fetch_array($query_spSorted,SQLSRV_FETCH_NUMERIC)) : ?>
                                                 <div class="col-lg-4 col-md-4 col-sm-6 mt-40">
                                                     <!-- single-product-wrap start -->
                                                     

@@ -3,9 +3,22 @@
     
 <!-- login-register31:27-->
 <head>
+        <?php
+        require("connect_db.php");
+        $id = 'KH0007';
+        // $id=(string)$id;
+        $sql_user ="SELECT * from tblCustomer Where id_customer = '$id'";
+        $query_user=sqlsrv_query($conn,$sql_user);
+        
+        $user = sqlsrv_fetch_array($query_user, SQLSRV_FETCH_NUMERIC);
+        ?>
+        <!-- $query=sqlsrv_query($conn,$sql); -->
+         <!-- $sql_sp='SELECT * FROM tblProduct'; -->
+        <!-- $sql_sp='select * from Product()'; -->
+        
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>My Shop</title>
+        <title>My Info</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- Favicon -->
@@ -428,7 +441,7 @@
                     <div class="breadcrumb-content">
                         <ul>
                             <li><a href="index.php">Trang chủ</a></li>
-                            <li class="active">Cửa hàng của tôi</li>
+                            <li class="active">My info</li>
                         </ul>
                     </div>
                 </div>
@@ -442,7 +455,7 @@
                             <!-- Login Form s-->
                             <form action="#" >
                                 <div class="login-form">
-                                    <h4 class="login-title">Cửa hàng của tôi</h4>
+                                    <h4 class="login-title">MY AVARTAR</h4>
                                     <div class="row">
 										<div class="col-sm-3 col-md-3 col-xs-3ic col-lg-3 mb-30">
                                         <div class="team-member mb-60 mb-sm-30 mb-xs-30">
@@ -453,31 +466,20 @@
 										</div>
 										<div class="col-sm-8 col-md-8 col-xs-8ic col-lg-8 mb-30">
 											<div class="col-md-12 col-12">
-                                            	<label>ID Cửa hàng:</label>
-                                            	<h5>CH0001</h5>
-												<label>Tên của hàng:</label>
-                                            	<h5>Tên</h5>
-												<label>Số điện thoại:</label>
-                                            	<h5>+84 (0) 123 456 789</h5>
+                                                <label>My ID:</label>
+                                                <h5><?php echo $user[0] ?></h5>
+												<label>Họ:</label>
+                                                <h5><?php echo $user[1] ?></h5>
+                                                <label>Tên:</label>
+                                            	<h5><?php echo $user[2] ?></h5>
+												
 												<label>Email:</label>
-                                            	<h5>email@gmail.com</h5>
-												<label>Phân loại:</label>
-                                            	<h5>Chuyên</h5>
-												<label>Sản phẩm:</label>
-                                            	<h5>...</h5>
-												<label>Phân phối:</label>
-                                            	<h5>Sỉ</h5>
-												<label>Đánh giá trung bình</label>
-												<div class="rating-box">
-                                                            <ul class="rating">
-                                                                <li><i class="fa fa-star-o"></i></li>
-                                                                <li><i class="fa fa-star-o"></i></li>
-                                                                <li><i class="fa fa-star-o"></i></li>
-                                                                <li class="no-star"><i class="fa fa-star-o"></i></li>
-                                                                <li class="no-star"><i class="fa fa-star-o"></i></li>
-																<li>3.2</li>
-                                                            </ul>
-                                                        </div>
+                                            	<h5><?php echo $user[3] ?></h5>
+												<label>Giới tính:</label>
+                                            	<h5><?php echo $user[4] ?></h5>
+												<label>Ngày sinh:</label>
+                                            	<h5><?php echo $user[5] ?></h5>
+											
 												<div class="col-md-20">
 												<button class="blue-button mt-0">Thay đổi thông tin</button>
 												</div>
@@ -485,14 +487,14 @@
 												<button class="blue-button mt-0">Đổi mật khẩu</button>
 												</div>
 												</div>
-                                        	</div>
-										</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
                         </div>
 						
-						
+            
                     </div>
                 </div>
             </div>

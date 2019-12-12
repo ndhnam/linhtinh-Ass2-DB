@@ -126,6 +126,8 @@ begin
 	join inserted on tblSell.idProduct = inserted.idProduct and tblSell.idShop = inserted.idShop
 end
 GO
+
+
 -- phần của ly --
 ------------------ TRIGGER ------------------
 
