@@ -5,11 +5,11 @@ go
 create TABLE tblCART(
 	id			varchar(50) not null,
 	primary key(id),
-	--id nvarchar(9) primary key,
 	idclient	varchar(50) not null,
-	--foreign key(idclient) references Client(id)
 );
-GO
+GO 
+create index idxCart on tblCART(id);
+go
 create TABLE tblADD_CART(
 	idcart		VARCHAR(50) not null,
 	idproduct	VARCHAR(50) not null,
@@ -22,8 +22,10 @@ CREATE TABLE tblCATEGORY(
 	id				char(3) not null,
 	primary key(id),
 	name			nvarchar(30),
-	quantity		int			--DEFAULT 0			--- tt dẫn xuất 
+	quantity		int			DEFAULT 0			--- tt dẫn xuất 
 );
+go
+create index idxCate on tblCATEGORY(id);
 go
 CREATE TABLE tblBELONG_CATEGORY(
 	idproduct	varchar(50) not null,
@@ -35,13 +37,13 @@ go
 INSERT INTO tblCART VALUES ('C01','KH0001');
 INSERT INTO tblCART VALUES ('C02','KH0002');
 INSERT INTO tblCART VALUES ('C03','KH0003');
---INSERT INTO tblCART VALUES ('C04','KH0004');
---INSERT INTO tblCART VALUES ('C05','KH0005');
+INSERT INTO tblCART VALUES ('C04','KH0004');
+INSERT INTO tblCART VALUES ('C05','KH0005');
 
-INSERT INTO tblADD_CART VALUES ('CO1','8865872832669','CH0001',5);
-INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0001',2);
---INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0002',1);
---INSERT INTO tblADD_CART VALUES ('CO2','4424616287949','CH0001',2);
+INSERT INTO tblADD_CART VALUES ('C01','8865872832669','CH0001',5);
+INSERT INTO tblADD_CART VALUES ('C01','4424616287949','CH0001',2);
+INSERT INTO tblADD_CART VALUES ('C01','4424616287949','CH0002',1);
+INSERT INTO tblADD_CART VALUES ('C02','4424616287949','CH0001',2);
 
 
 INSERT INTO tblCATEGORY VALUES ('EL',N'Electronics',0);
@@ -51,8 +53,8 @@ INSERT INTO tblCATEGORY VALUES ('FO',N'FOOD',0);
 INSERT INTO tblCATEGORY VALUES ('ST',N'Stationery',0);
 INSERT INTO tblCATEGORY VALUES ('TO',N'Toy',0);
 
---INSERT INTO tblBELONG_CATEGORY VALUES ('8865872832669','EL');
---INSERT INTO tblBELONG_CATEGORY VALUES ('4424616287949','EL');
+INSERT INTO tblBELONG_CATEGORY VALUES ('8865872832669','EL');
+INSERT INTO tblBELONG_CATEGORY VALUES ('4424616287949','EL');
 go
 
 ALTER TABLE tblCART
@@ -100,7 +102,7 @@ ALTER TABLE tblBELONG_CATEGORY
 go 
 --- procedure insert + validate + print error
 Create Proc usp_insert_cate
-	@id			char(3),
+	@id				char(3),
 	@name			nvarchar(30),
 	@quantity		int	
 As	begin  
@@ -113,15 +115,14 @@ As	begin
 --- catch
 			begin catch
 		print 'Error insert category
-Category was already exist'
+				Category was already exist'
 		return 0
 			end catch
 	end
 ;
 Go
-exec usp_insert_cate 'AB','ab',0;
-exec usp_insert_cate 'HI','high',0;
-go
+		exec dbo.usp_insert_cate 'MB','Mobile', 0;
+		select * from tblCATEGORY;
 --Procedure insert cart
 Create Proc usp_insert_cart
 	@id		varchar(50) ,
@@ -131,7 +132,7 @@ As
 --declare set 
 			begin try 
 		insert into tblCART(id, idclient) values (@id, @idclient)
-		print 'Insert product successfully'
+		print 'Insert  successfully'
 		return @@ROWCOUNT
 			end try
 --- catch
@@ -155,9 +156,10 @@ Create Proc usp_insert_add_cart
 As	
 	begin  
 --declare set 
-			begin try 
-		insert into tblADD_CART(idcart, idproduct,idshop,quantity) values (@idcart, @idproduct,@idshop,@quantity)
-		print 'Insert  successfully'
+		begin try 
+		insert into tblADD_CART(idcart, idproduct,idshop,quantity)
+	 values (@idcart, @idproduct,@idshop,@quantity)
+		print 'Insert successfully'
 		return @@ROWCOUNT
 			end try
 --- catch
@@ -169,18 +171,18 @@ As
 	end
 ;
 Go
-	exec usp_insert_add_cart 'CO1','4424616287949','CH0002',1;
-	exec usp_insert_add_cart 'CO2','4424616287949','CH0001',2;
+	exec usp_insert_add_cart 'C04','4424616287949','CH0002',1;
+	exec usp_insert_add_cart 'C02','4424616287949','CH0001',2;
 go
 -- Procedure insert belong_cate
 Create Proc usp_insert_belong_cate
-	@idcate		CHAR(3),
-	@idproduct	VARCHAR(50)		
+	@idproduct	VARCHAR(50)	,
+	@idcate		CHAR(3)	
 As	
 	begin  
 --declare set 
 			begin try 
-		insert into tblBELONG_CATEGORY(idcate, idproduct) values (@idcate, @idproduct)
+		insert into tblBELONG_CATEGORY(idproduct, idcate) values (@idproduct, @idcate)
 		print 'Insert product successfully'
 		return @@ROWCOUNT
 			end try
@@ -196,8 +198,6 @@ Go
 	exec usp_insert_belong_cate '8865872832669','EL';
 	exec usp_insert_belong_cate '4424616287949','EL';
 go
-
-
 -- trigger after--
 create trigger check_quantity_trigger on tblADD_CART
 for insert
@@ -258,7 +258,7 @@ CREATE prOC usp_List_Cart		-- Link 4 relation: cart, product, addcart, customer
 
 	end
 go
-exec	usp_List_Cart 'b','a'
+exec	usp_List_Cart 'Tam','Tran'
 WITH RESULT SETS
 (
 (
@@ -290,7 +290,7 @@ BEGIN
 						where name=@name_pro)
 END
 GO
-exec usp_Pro_MulFunction 'book'
+exec usp_Pro_MulFunction 'book' 
 with result sets (
 	( [Code Cate] varchar(50) ,
 		[Name Cate]	varchar(50)
@@ -327,7 +327,7 @@ BEGIN
 END
 GO
 
-select dbo.ufnsum('ly','tran') as TotalProductinCart;
+select dbo.ufnsum('Tam','Tran') as TotalProductinCart;
 go
 -- Function FavoriteShop--
 SET ANSI_NULLS ON
@@ -378,4 +378,4 @@ BEGIN
 	RETURN 
 END;
 GO
-select *from ufnFavoriteShop('b','a')
+select *from ufnFavoriteShop('Tam','Tran')
