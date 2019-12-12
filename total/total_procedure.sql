@@ -82,7 +82,7 @@ BEGIN
 		END
 END
 GO
-ALTER PROCEDURE insertCustomerAccount
+CREATE PROCEDURE insertCustomerAccount
 	@id_customer VARCHAR(6),
 	@username VARCHAR(32),
 	@password VARCHAR(50),
@@ -114,7 +114,8 @@ BEGIN
 		IF @count_id = 0 AND @count_user = 0
 			BEGIN
 				INSERT INTO dbo.tblAccount(id, username, password) VALUES (@id_customer, @username, @afterHashPassword)
-				INSERT INTO dbo.tblCustomer(id_customer, last_name, first_name, email, sex, date_of_birth) VALUES (@id_customer, @last_name, @first_name, @email, @sex, @date_of_birth)
+				INSERT INTO dbo.tblCustomer(id_customer, last_name, first_name, email, sex, date_of_birth) 
+				VALUES (@id_customer, @last_name, @first_name, @email, @sex, @date_of_birth)
 				INSERT INTO dbo.tblTelephoneNumber VALUES (@tel_num, @id_customer)
 				INSERT INTO dbo.tblAddress VALUES(@stt,@id_customer,@province,@city,@ward,NULL,'')
 			END
@@ -538,6 +539,80 @@ Category was already exist'
 			end catch
 	end
 Go
+--Procedure insert cart
+Create Proc usp_insert_cart
+	@id		varchar(50) ,
+	@idclient	varchar(50)	
+As	
+	begin  
+--declare set 
+			begin try 
+		insert into tblCART(id, idclient) values (@id, @idclient)
+		print 'Insert product successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert cart
+			Cart was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+	exec usp_insert_cart 'C04','KH0004';
+	exec usp_insert_cart 'C05','KH0005';
+go
+-- Procedure insert add_cart
+Create Proc usp_insert_add_cart
+	@idcart		VARCHAR(50),
+	@idproduct	VARCHAR(50),
+	@idshop		VARCHAR(50),
+	@quantity	int	
+As	
+	begin  
+--declare set 
+			begin try 
+		insert into tblADD_CART(idcart, idproduct,idshop,quantity) values (@idcart, @idproduct,@idshop,@quantity)
+		print 'Insert  successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert addcart
+			addcart was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+	exec usp_insert_add_cart 'CO1','4424616287949','CH0002',1;
+	exec usp_insert_add_cart 'CO2','4424616287949','CH0001',2;
+go
+-- Procedure insert belong_cate
+Create Proc usp_insert_belong_cate
+	@idcate		CHAR(3),
+	@idproduct	VARCHAR(50)		
+As	
+	begin  
+--declare set 
+			begin try 
+		insert into tblBELONG_CATEGORY(idcate, idproduct) values (@idcate, @idproduct)
+		print 'Insert product successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert belong_cate
+			belong_cate was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+	exec usp_insert_belong_cate '8865872832669','EL';
+	exec usp_insert_belong_cate '4424616287949','EL';
+go							   
 CREATE PROCEDURE usp_List_Cart		-- Link 4 relation: cart, product, addcart, customer
 	@first_name		NVARCHAR(20),
 	@last_name		NVARCHAR(20)
@@ -579,7 +654,6 @@ GO
 -- phần của ly --
 ------------------ PROCEDURE ------------------
 
--- Find all customers in one city and sort by ID
 GO 
 CREATE PROCEDURE updateTelNum
 	@tel_num varchar(11), 
@@ -589,6 +663,9 @@ BEGIN
 	UPDATE dbo.tblTelephoneNumber SET tel_number = @tel_num
 	WHERE id_customer = @id_customer
 END
+
+
+--Tìm tất cả khách hàng ở cùng một tỉnh nào đó
 GO
 CREATE PROCEDURE queryCustomersInOneProvince
 	@province nvarchar(100)

@@ -11,9 +11,9 @@ create TABLE tblCART(
 );
 GO
 create TABLE tblADD_CART(
-	idcart		nvarchar(9) not null,
+	idcart		VARCHAR(50) not null,
 	idproduct	VARCHAR(50) not null,
-	idshop		VARCHAR(6) not null,
+	idshop		VARCHAR(50) not null,
 	primary key(idcart,idproduct,idshop),
 	quantity	int )
 ;
@@ -22,7 +22,7 @@ CREATE TABLE tblCATEGORY(
 	id				char(3) not null,
 	primary key(id),
 	name			nvarchar(30),
-	quantity		int			DEFAULT 0			--- tt dẫn xuất 
+	quantity		int			--DEFAULT 0			--- tt dẫn xuất 
 );
 go
 CREATE TABLE tblBELONG_CATEGORY(
@@ -35,13 +35,13 @@ go
 INSERT INTO tblCART VALUES ('C01','KH0001');
 INSERT INTO tblCART VALUES ('C02','KH0002');
 INSERT INTO tblCART VALUES ('C03','KH0003');
-INSERT INTO tblCART VALUES ('C04','KH0004');
-INSERT INTO tblCART VALUES ('C05','KH0005');
+--INSERT INTO tblCART VALUES ('C04','KH0004');
+--INSERT INTO tblCART VALUES ('C05','KH0005');
 
 INSERT INTO tblADD_CART VALUES ('CO1','8865872832669','CH0001',5);
 INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0001',2);
-INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0002',1);
-INSERT INTO tblADD_CART VALUES ('CO2','4424616287949','CH0001',2);
+--INSERT INTO tblADD_CART VALUES ('CO1','4424616287949','CH0002',1);
+--INSERT INTO tblADD_CART VALUES ('CO2','4424616287949','CH0001',2);
 
 
 INSERT INTO tblCATEGORY VALUES ('EL',N'Electronics',0);
@@ -51,8 +51,8 @@ INSERT INTO tblCATEGORY VALUES ('FO',N'FOOD',0);
 INSERT INTO tblCATEGORY VALUES ('ST',N'Stationery',0);
 INSERT INTO tblCATEGORY VALUES ('TO',N'Toy',0);
 
-INSERT INTO tblBELONG_CATEGORY VALUES ('8865872832669','EL');
-INSERT INTO tblBELONG_CATEGORY VALUES ('4424616287949','EL');
+--INSERT INTO tblBELONG_CATEGORY VALUES ('8865872832669','EL');
+--INSERT INTO tblBELONG_CATEGORY VALUES ('4424616287949','EL');
 go
 
 ALTER TABLE tblCART
@@ -100,7 +100,7 @@ ALTER TABLE tblBELONG_CATEGORY
 go 
 --- procedure insert + validate + print error
 Create Proc usp_insert_cate
-	@id				char(3),
+	@id			char(3),
 	@name			nvarchar(30),
 	@quantity		int	
 As	begin  
@@ -119,9 +119,85 @@ Category was already exist'
 	end
 ;
 Go
-exec usp_insert_cate 'HO','home',3;
-exec usp_insert_cate 'HO','home',-1;
+exec usp_insert_cate 'AB','ab',0;
+exec usp_insert_cate 'HI','high',0;
 go
+--Procedure insert cart
+Create Proc usp_insert_cart
+	@id		varchar(50) ,
+	@idclient	varchar(50)	
+As	
+	begin  
+--declare set 
+			begin try 
+		insert into tblCART(id, idclient) values (@id, @idclient)
+		print 'Insert product successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert cart
+			Cart was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+	exec usp_insert_cart 'C04','KH0004';
+	exec usp_insert_cart 'C05','KH0005';
+go
+-- Procedure insert add_cart
+Create Proc usp_insert_add_cart
+	@idcart		VARCHAR(50),
+	@idproduct	VARCHAR(50),
+	@idshop		VARCHAR(50),
+	@quantity	int	
+As	
+	begin  
+--declare set 
+			begin try 
+		insert into tblADD_CART(idcart, idproduct,idshop,quantity) values (@idcart, @idproduct,@idshop,@quantity)
+		print 'Insert  successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert addcart
+			addcart was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+	exec usp_insert_add_cart 'CO1','4424616287949','CH0002',1;
+	exec usp_insert_add_cart 'CO2','4424616287949','CH0001',2;
+go
+-- Procedure insert belong_cate
+Create Proc usp_insert_belong_cate
+	@idcate		CHAR(3),
+	@idproduct	VARCHAR(50)		
+As	
+	begin  
+--declare set 
+			begin try 
+		insert into tblBELONG_CATEGORY(idcate, idproduct) values (@idcate, @idproduct)
+		print 'Insert product successfully'
+		return @@ROWCOUNT
+			end try
+--- catch
+			begin catch
+		print 'Error insert belong_cate
+			belong_cate was already exist'
+		return 0
+			end catch
+	end
+;
+Go
+	exec usp_insert_belong_cate '8865872832669','EL';
+	exec usp_insert_belong_cate '4424616287949','EL';
+go
+
+
 -- trigger after--
 create trigger check_quantity_trigger on tblADD_CART
 for insert
