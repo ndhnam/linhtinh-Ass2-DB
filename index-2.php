@@ -389,7 +389,7 @@
                                                     </li>
                                                     <li><a href="index.php">Other Pages 2</a>
                                                         <ul>
-                                                            <li><a href="contact.php">Contact</a></li>
+                                                            <li><a href="transportation.php">Contact</a></li>
                                                             <li><a href="about-us.php">About Us</a></li>
                                                             <li><a href="faq.php">FAQ</a></li>
                                                             <li><a href="404.php">404 Error</a></li>
@@ -398,7 +398,7 @@
                                                 </ul>
                                             </li>
                                             <li><a href="about-us.php">About Us</a></li>
-                                            <li><a href="contact.php">Contact</a></li>
+                                            <li><a href="transportation.php">Contact</a></li>
                                             <!-- Begin Header Bottom Menu Information Area -->
                                             <li class="hb-info f-right p-0 d-sm-none d-lg-block">
                                                 <span>6688 London, Greater London BAS 23JK, UK</span>

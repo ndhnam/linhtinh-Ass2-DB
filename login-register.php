@@ -6,8 +6,57 @@ if( $conn == false)
 {
 	echo "Connection could not be established.<br />";
     //die( print_r( sqlsrv_errors(), true));
-	 include ("lib/404.html");
+	 include ("404.php");
 }	
+if(array_key_exists('btn_reg_shop', $_GET)) 
+{ 
+	$sid="";
+	$suser="";
+	$spass="";
+	$scpass="";
+	$sname="";
+	$sphone="";
+	$saddress="";
+	$semail="";
+	$savt="";
+	$sclassify="";
+	$scategory="";
+	$sdistribution="";
+    if(isset($_POST["id_shop"])) { $sid = $_POST['id_shop']; }
+    if(isset($_POST["username_shop"])) { $suser = $_POST['username_shop']; }
+    if(isset($_POST["password_shop"])) { $spass = $_POST['password_shop']; }
+    if(isset($_POST["cpassword_shop"])) { $scpass = $_POST['cpassword_shop']; }
+    if(isset($_POST["name_shop"])) { $sname = $_POST['name_shop']; }
+    if(isset($_POST["phone_shop"])) { $sphone = $_POST['phone_shop']; }
+    if(isset($_POST["address_shop"])) { $saddress = $_POST['address_shop']; }
+    if(isset($_POST["email_shop"])) { $semail = $_POST['email_shop']; }
+    if(isset($_POST["avt_shop"])) { $semail = $_POST['avt_shop']; }
+    if(isset($_POST["classify"])) { $semail = $_POST['classify']; }
+    if(isset($_POST["category"])) { $semail = $_POST['category']; }
+    if(isset($_POST["distribution"])) { $semail = $_POST['distribution']; }
+	$sid=(string)$sid;
+	$suser=(string)$suser;
+	$spass=(string)$spass;
+	$scpass=(string)$scpass;
+	$sname=(string)$sname;
+	$sphone=(string)$sphone;
+	$saddress=(string)$saddress;
+	$semail=(string)$semail;
+	$savt=(string)$savt;
+	$sclassify=(string)$sclassify;
+	$scategory=(string)$scategory;
+	$sdistribution=(string)$sdistribution;
+	echo $sid;
+	if ($spass == $scpass)
+	{
+		$sql="EXEC dbo.insertShopAccount '$sid', '$suser', '$spass', '$sname', $sphone, N'$saddress', '$semail', N'$savt', '$sclassify', N'$scategory', N'$sdistribution';";
+		$stmt=sqlsrv_query($conn,$sql);
+		if ($stmt == false)
+		{
+			die( print_r( sqlsrv_errors(), true));
+		}
+	}
+} 
 ?>
 <!doctype html>
 <html class="no-js" lang="zxx">
@@ -85,9 +134,9 @@ if( $conn == false)
                                             <div class="ht-setting-trigger"><span>Setting</span></div>
                                             <div class="setting ht-setting">
                                                 <ul class="ht-setting-list">
-                                                    <li><a href="login-register.html">My Account</a></li>
+                                                    <li><a href="login-register.php">My Account</a></li>
                                                     <li><a href="checkout.php">Checkout</a></li>
-                                                    <li><a href="login-register.html">Sign In</a></li>
+                                                    <li><a href="login-register.php">Sign In</a></li>
                                                 </ul>
                                             </div>
                                         </li>
@@ -341,7 +390,7 @@ if( $conn == false)
                                                     <li class="sub-dropdown-holder"><a href="blog-left-sidebar.php">Blog Grid View</a>
                                                         <ul class="hb-dropdown hb-sub-dropdown">
                                                             <li><a href="blog-2-column.php">Blog 2 Column</a></li>
-                                                            <li><a href="blog-3-column.html">Blog 3 Column</a></li>
+                                                            <li><a href="blog-3-column.php">Blog 3 Column</a></li>
                                                             <li><a href="blog-left-sidebar.php">Grid Left Sidebar</a></li>
                                                             <li><a href="blog-right-sidebar.php">Grid Right Sidebar</a></li>
                                                         </ul>
@@ -373,7 +422,7 @@ if( $conn == false)
                                                     <li><a href="blog-left-sidebar.php">Blog Layouts</a>
                                                         <ul>
                                                             <li><a href="blog-2-column.php">Blog 2 Column</a></li>
-                                                            <li><a href="blog-3-column.html">Blog 3 Column</a></li>
+                                                            <li><a href="blog-3-column.php">Blog 3 Column</a></li>
                                                             <li><a href="blog-left-sidebar.php">Grid Left Sidebar</a></li>
                                                             <li><a href="blog-right-sidebar.php">Grid Right Sidebar</a></li>
                                                             <li><a href="blog-list.php">Blog List</a></li>
@@ -392,7 +441,7 @@ if( $conn == false)
                                                     </li>
                                                     <li><a href="index.php">Other Pages</a>
                                                         <ul>
-                                                            <li class="active"><a href="login-register.html">My Account</a></li>
+                                                            <li class="active"><a href="login-register.php">My Account</a></li>
                                                             <li><a href="checkout.php">Checkout</a></li>
                                                             <li><a href="compare.php">Compare</a></li>
                                                             <li><a href="wishlist.php">Wishlist</a></li>
@@ -401,7 +450,7 @@ if( $conn == false)
                                                     </li>
                                                     <li><a href="index.php">Other Pages 2</a>
                                                         <ul>
-                                                            <li><a href="contact.php">Contact</a></li>
+                                                            <li><a href="transportation.php">Contact</a></li>
                                                             <li><a href="about-us.php">About Us</a></li>
                                                             <li><a href="faq.php">FAQ</a></li>
                                                             <li><a href="404.php">404 Error</a></li>
@@ -410,7 +459,7 @@ if( $conn == false)
                                                 </ul>
                                             </li>
                                             <li><a href="about-us.php">About Us</a></li>
-                                            <li><a href="contact.php">Contact</a></li>
+                                            <li><a href="transportation.php">Contact</a></li>
                                             <li><a href="shop-left-sidebar.php">Smartwatch</a></li>
                                             <li><a href="shop-left-sidebar.php">Accessories</a></li>
                                         </ul>
@@ -485,6 +534,10 @@ if( $conn == false)
                                 <div class="login-form">
                                     <h4 class="login-title">Đăng ký cửa hàng</h4>
                                     <div class="row">
+										<div class="col-md-12 col-12 mb-20">
+                                            <label>Mã cửa hàng*</label>
+                                            <input id="id_shop" name="id_shop" class="mb-0" type="text" placeholder="ID">
+                                        </div>
                                         <div class="col-md-12 col-12 mb-20">
                                             <label>Tên tài khoản*</label>
                                             <input id="username_shop" name="username_shop" class="mb-0" type="text" placeholder="Username">
@@ -495,48 +548,53 @@ if( $conn == false)
                                         </div>
 										<div class="col-md-12 mb-20">
                                             <label>Nhập lại mật khẩu*</label>
-                                            <input id="cpassword_shop" class="mb-0" type="password" placeholder="Confirm Password">
+                                            <input id="cpassword_shop" name="cpassword_shop" class="mb-0" type="password" placeholder="Confirm Password">
                                         </div>
                                         <div class="col-md-12 mb-20">
-                                            <label>Email Address*</label>
-                                            <input class="mb-0" 
-											placeholder="Email Address">
+                                            <label>Tên cửa hàng*</label>
+                                            <input id="name_shop" name="name_shop" class="mb-0" placeholder="Name of shop">
                                         </div>
 										<div class="col-md-12 mb-20">
-											<label>Số điện thoại</label>
-											<input class="mb-0"
+											<label>Số điện thoại*</label>
+											<input id="phone_shop" name="phone_shop" class="mb-0"
 											placeholder="Phone Number">
 										</div>
 										<div class="col-md-12 mb-20">
+                                            <label>Địa chỉ*</label>
+                                            <input id="address_shop" name="address_shop" class="mb-0" 
+											placeholder="Address">
+                                        </div>
+										<div class="col-md-12 mb-20">
+                                            <label>Email*</label>
+                                            <input id="email_shop" name="email_shop" class="mb-0" 
+											placeholder="Email">
+                                        </div>
+										<div class="col-md-12 mb-20">
 											<label>Phân loại</label>
-											<select>
+											<select id="classify" name="classify">
 												<option value="0">Không chuyên</option>
 												<option value="1">Chuyên</option>
 											</select>
 										</div>
 										<div class="col-md-12 mb-20">
 											<label>Danh mục</label>
-											<input class="mb-0"
+											<input id="category" name="category" class="mb-0"
 											placeholder="Thời trang nam, v.v...">
 										</div>
 										<div class="col-md-12 mb-20">
 											<label>Phân phối</label>
-											<div class="check-box d-inline-block ml-0 ml-md-2 mt-10">
-                                                <input type="checkbox" id="bansi">
-                                                <label for="bansi">Bán sỉ</label>
-                                            </div>
-											<div class="check-box d-inline-block ml-0 ml-md-2 mt-10">
-                                                <input type="checkbox" id="banle">
-                                                <label for="banle">Bán lẻ</label>
-                                            </div>
+											<input id="distribution" name="distribution" class="mb-0"
+											placeholder="Sỉ, lẻ">
 										</div>
 										<div class="col-md-12 mb-20">
 											<label>Ảnh đại diện</label>
-											<input class="mb-0"
+											<input id="avt_shop" name="avt_shop" class="mb-0"
 											placeholder="Ex: images.pexels.com/photos/414612/pexels-photo-414612.jpeg">
 										</div>
                                        		 <div class="col-12">
-                                            <button formaction="creAccShop.php" class="register-button mt-0" >Register</button>
+												 <form method="post">
+												<button id="btn_reg_shop" name="btn_reg_shop" class="register-button mt-0" >Register</button>
+													 </form>
                                         </div>
                                     </div>
                                 </div>
@@ -568,7 +626,7 @@ if( $conn == false)
                                             <input class="mb-0" type="password" placeholder="Confirm Password">
                                         </div>
                                         <div class="col-12">
-                                            <button formaction="dbCon.php" class="register-button mt-0">Register</button>
+                                            <button class="register-button mt-0">Register</button>
                                         </div>
                                     </div>
                                 </div>

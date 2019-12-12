@@ -398,7 +398,7 @@
                                                 </ul>
                                             </li>
                                             <li><a href="about-us.php">About Us</a></li>
-                                            <li><a href="contact.php">Contact</a></li>
+                                            <li><a href="contact.php">Transportation</a></li>
                                             <li><a href="shop-left-sidebar.php">Smartwatch</a></li>
                                             <li><a href="shop-left-sidebar.php">Accessories</a></li>
                                         </ul>
@@ -428,7 +428,7 @@
                     <div class="breadcrumb-content">
                         <ul>
                             <li><a href="index.php">Home</a></li>
-                            <li class="active">Contact</li>
+                            <li class="active">Transportation</li>
                         </ul>
                     </div>
                 </div>
@@ -437,6 +437,75 @@
             <!-- Begin Contact Main Page Area -->
             <div class="contact-main-page mt-60 mb-40 mb-md-40 mb-sm-40 mb-xs-40">
                 <div class="container mb-60">
+					<div>
+					
+					<form method="POST" action="addTransport.php" role="form">
+    <div class="form-group">
+        <label for="id">Transportation ID:</label>
+        <input id="id" name="id" type="text" value="" required="true">
+    </div>
+    <div class="form-group">
+        <label for="name">Transportation Name:</label>
+        <input id="name" name="name" type="text" value="" required="true">
+    </div>
+    <div class="form-group">
+        <label for="tel">Transportation Telephone:</label>
+        <input id="tel" name="tel" type="text" value="" required="true">
+    </div>
+   <div class="form-group">
+        <label for="mail">Transportation mail:</label>
+        <input id="mail" name="mail" type="text" value="" required="true">
+    </div>
+    <div class="form-group">
+        <label for="cost">Transportation cost:</label>
+        <input id="cost" name="cost" type="text" value="" required="true">
+    </div>
+    <div class="form-group">
+        <label for="adress">Transportation adress:</label>
+        <input id="adress" name="adress" type="text" value="" required="true">
+   </div>
+   
+
+
+
+    <p>
+        <input type="submit" value="Add" class="btn btn-info">
+    </p>
+</form>
+		</div>
+					<?php 
+				$serverName = "DESKTOP-H4MS494";
+				$connectionInfo = array( "Database"=>"dbTipee");
+				$conn = sqlsrv_connect( $serverName, $connectionInfo);
+				$tableName = 'tblTransportation';
+				$query = "SELECT * FROM $tableName";
+				$tv_1 = sqlsrv_query($conn, $query);
+					echo "<table>";
+					echo "	<td width='150'><p> Mã Đơn Vị</p></td>";
+					echo "	<td width='130'><p> Tên Đơn Vị </p></td>";
+					echo "	<td width='130'><p>	SĐT </p></td>";
+					echo "	<td width='330'><p> Mail</p></td>";
+					echo "	<td width='100'><p> Cost </p></td>";
+					echo "	<td width='530'><p> Address</p></td>";
+					echo "</table>";
+				while( $tv_2=sqlsrv_fetch_array($tv_1,SQLSRV_FETCH_NUMERIC ))
+				{
+				?>
+				<div >
+					<table>
+						<td width="150"><p> <?php  echo $tv_2[0]; ?></p></td>
+						<td width="130"><p> <?php  echo $tv_2[1]; ?></p></td>
+						<td width="130"><p> <?php  echo $tv_2[2]; ?></p></td>
+						<td width="330"><p> <?php  echo $tv_2[3]; ?></p></td>
+						<td width="100"><p> <?php  echo $tv_2[4]; ?></p></td>
+						<td width="530"><p> <?php  echo $tv_2[5]; ?></p></td>
+					</table>
+				
+				
+				</div>
+				<?php
+				}
+				?>
                     <div id="google-map"></div>
                 </div>
                 <div class="container">
